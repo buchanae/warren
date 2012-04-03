@@ -2,7 +2,6 @@
 #define _GFF_UTILS_H
 
 #include <string>
-#include <sstream>
 #include <vector>
 
 

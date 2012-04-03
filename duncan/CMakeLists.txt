@@ -13,6 +13,7 @@ set(SRCS
 )
 set(TEST_SRCS
     tests/Feature.cpp
+    tests/Attribute.cpp
 )
 add_executable( duncan ${SRCS} src/main.cpp )
 
@@ -21,5 +22,6 @@ if( build_tests )
     enable_testing()
     add_executable( duncan_tests ${SRCS} ${TEST_SRCS} )
     target_link_libraries( duncan_tests gtest gtest_main )
+    target_link_libraries( duncan_tests gmock )
     add_test( all-tests duncan_tests )
 endif()

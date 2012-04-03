@@ -9,12 +9,15 @@ using std::string;
 namespace GFF {
 
     bool Attribute::hasMultiple( void ){
-        return false;
+        return value.find(',') != string::npos;
     }
     
     std::vector<string> Attribute::getAll( void ){
-        std::vector<string> v;
-        return v;
+        return split(value, ',');
+    }
+
+    string Attribute::toString( void ){
+        return name + "=" + value;
     }
 
     bool Attribute::fromString( string in ){
