@@ -18,13 +18,15 @@ namespace GFF {
             string type;
             unsigned int start;
             unsigned int end;
-            double score;
+            string score;
             char strand;
-            unsigned short phase;
+            char phase;
             std::vector<GFF::Attribute> attributes;
 
             bool hasStrand( void );
             bool isRevStrand( void );
+            bool hasScore( void );
+            double getScore( void );
             int getLength( void );
             string toString( void );
             bool fromString( string );

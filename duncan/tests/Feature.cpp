@@ -20,7 +20,7 @@ TEST( FeatureTest, hasStrand ){
 
     GFF::Feature f;
     f.strand = '+';
-    EXPECT_TRUE(f.isRevStrand());
+    EXPECT_FALSE(f.isRevStrand());
 
     f.strand = '-';
     EXPECT_TRUE(f.isRevStrand());
@@ -48,15 +48,13 @@ TEST( FeatureTest, toString ){
     f.type = "testgene";
     f.start = 20;
     f.end = 30;
-    f.score = 0;
+    f.score = "0";
     f.strand = '+';
-    f.phase = 0;
+    f.phase = '0';
 
-    // TODO replace these with a string join
     EXPECT_EQ("Chr\ttest\ttestgene\t20\t30\t0\t+\t0\t", f.toString());
 
-    // TODO these are failing because strand and phase are defined as numbers, not chars
-    f.score = '.';
+    f.score = ".";
     EXPECT_EQ("Chr\ttest\ttestgene\t20\t30\t.\t+\t0\t", f.toString());
 
     f.phase = '.';
@@ -76,9 +74,9 @@ TEST( FeatureTest, fromString ){
     EXPECT_EQ("testgene", f.type);
     EXPECT_EQ(20, f.start);
     EXPECT_EQ(30, f.end);
-    EXPECT_EQ(0, f.score);
+    EXPECT_EQ("0", f.score);
     EXPECT_EQ('+', f.strand);
-    EXPECT_EQ(0, f.phase);
+    EXPECT_EQ('0', f.phase);
     EXPECT_EQ("foo", f.attributes.at(0).value);
 }
 

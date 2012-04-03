@@ -1,8 +1,11 @@
 #ifndef _GFF_READER_H
 #define _GFF_READER_H
 
-#include <ifstream>
+#include <iostream>
+#include <fstream>
 #include <string>
+
+#include "Feature.h"
 
 using std::string;
 
@@ -13,7 +16,7 @@ namespace GFF {
             bool getNextFeature( Feature& );
 
         private:
-            ifstream fh;
+            std::ifstream fh;
 
             bool isGFFComment( string );
     };
