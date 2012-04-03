@@ -10,15 +10,10 @@
 using std::string;
 
 namespace GFF {
+
     class Reader {
         public:
-            bool Open( string );
-            bool getNextFeature( Feature& );
-
-        private:
-            std::ifstream fh;
-
-            bool isGFFComment( string );
+            bool getNextFeature( std::istream&, Feature& );
     };
 }
 

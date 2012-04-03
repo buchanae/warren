@@ -8,12 +8,14 @@ set(SRCS
     src/Feature.h
     src/Feature.cpp
     src/Reader.h
+    src/Reader.cpp
     src/utils.cpp
     src/utils.h
 )
 set(TEST_SRCS
     tests/Feature.cpp
     tests/Attribute.cpp
+    tests/Reader.cpp
 )
 add_executable( duncan ${SRCS} src/main.cpp )
 
