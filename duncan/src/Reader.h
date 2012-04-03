@@ -10,11 +10,10 @@
 using std::string;
 
 namespace GFF {
+    namespace Reader {
 
-    class Reader {
-        public:
-            bool getNextFeature( std::istream&, Feature& );
-    };
+        bool getNextFeature( std::istream&, Feature& );
+    }
 }
 
 #endif
