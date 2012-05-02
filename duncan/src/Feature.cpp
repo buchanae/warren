@@ -2,14 +2,62 @@
 #include <stdlib.h>
 #include <vector>
 
-#include "Attribute.h"
+#include "Attributes.h"
 #include "Feature.h"
-#include "utils.h"
-
+#include "tokenizer.h"
 
 using std::string;
 
-namespace GFF {
+namespace GFF
+{
+    Feature::Feature (void)
+    {
+        seqid = ".";
+        source = ".";
+        type = ".";
+        start = 0;
+        end = 0;
+        score = ".";
+        strand = '.';
+        phase = '.';
+        raw_attributes = ".";
+    }
+
+    Feature::Feature (const char * raw)
+    {
+        string s(raw);
+        if (!initFromGFF(s)) throw "Invalid GFF string";
+    }
+
+    Feature::Feature (string& raw)
+    {
+        if (!initFromGFF(raw)) throw "Invalid GFF string";
+    }
+
+    bool Feature::initFromGFF(string& raw)
+    {
+        // split the tab-delimited columns
+        std::vector<string> cols;
+        tokenizer tokens(raw, separator("\t"));
+        std::copy(tokens.begin(), tokens.end(), std::back_inserter(cols));
+
+        if( cols.size() != 9 ) return false;
+
+        seqid = cols.at(0);
+        source = cols.at(1);
+        type = cols.at(2);
+        start = atoi(cols.at(3).c_str());
+        end = atoi(cols.at(4).c_str());
+        score = cols.at(5);
+        strand = *(cols.at(6).c_str());
+        phase = *(cols.at(7).c_str());
+
+        raw_attributes = cols.at(8);
+        attributes = Attributes();
+        attributes.addFromGFF(raw_attributes);
+
+        return true;
+    }
 
     bool Feature::hasStrand( void ){
         return strand == '+' || strand == '-';
@@ -23,6 +71,7 @@ namespace GFF {
         return end - start + 1;
     }
     
+    /* TODO
     string Feature::toString( void ){
         std::stringstream out;
         out << seqid << "\t";
@@ -38,30 +87,5 @@ namespace GFF {
 
         return out.str();
     }
-
-    bool Feature::fromString( string in ){
-
-        std::vector<string> cols = split( in, '\t' );
-
-        if( cols.size() != 9 ) return false;
-
-        seqid = cols.at(0);
-        source = cols.at(1);
-        type = cols.at(2);
-        start = atoi(cols.at(3).c_str());
-        end = atoi(cols.at(4).c_str());
-        score = cols.at(5);
-        strand = *(cols.at(6).c_str());
-        phase = *(cols.at(7).c_str());
-        std::vector<string> raw_attrs = split( cols.at(8), ';' );
-
-        std::vector<string>::iterator it = raw_attrs.begin();
-        for( ; it != raw_attrs.end(); ++it ){
-            Attribute a;
-            a.fromString( *it );
-            attributes.push_back( a );
-        }
-
-        return true;
-    }
+    */
 }

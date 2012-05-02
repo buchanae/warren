@@ -1,11 +1,16 @@
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 
 #include "Feature.h"
 
+using testing::ElementsAre;
+using namespace GFF;
+
+// TODO features can have URL escaped characters
 
 TEST( FeatureTest, isRevStrand ){
 
-    GFF::Feature f;
+    Feature f;
     f.strand = '+';
     EXPECT_FALSE(f.isRevStrand());
 
@@ -18,7 +23,7 @@ TEST( FeatureTest, isRevStrand ){
 
 TEST( FeatureTest, hasStrand ){
 
-    GFF::Feature f;
+    Feature f;
     f.strand = '+';
     EXPECT_FALSE(f.isRevStrand());
 
@@ -34,15 +39,39 @@ TEST( FeatureTest, hasStrand ){
 
 TEST( FeatureTest, getLength ){
 
-    GFF::Feature f;
+    Feature f;
     f.start = 20;
     f.end = 30;
     EXPECT_EQ(11, f.getLength());
 }
 
+TEST( FeatureTest, from_GFF ){
+
+    Feature f("Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo");
+    EXPECT_EQ("Chr", f.seqid);
+    EXPECT_EQ("test", f.source);
+    EXPECT_EQ("testgene", f.type);
+    EXPECT_EQ(20, f.start);
+    EXPECT_EQ(30, f.end);
+    EXPECT_EQ("0", f.score);
+    EXPECT_EQ('+', f.strand);
+    EXPECT_EQ('0', f.phase);
+    EXPECT_EQ("Name=foo", f.raw_attributes);
+    string s;
+    f.attributes.get("Name", s);
+    EXPECT_EQ("foo", s);
+}
+
+TEST (FeatureTest, from_GFF_invalid_number_of_columns)
+{
+    // TODO more specific exception class
+    EXPECT_ANY_THROW(Feature f("Chr\ttest\ttestgene\t20\t30\t0\t+\t"));
+}
+
+/*
 TEST( FeatureTest, toString ){
 
-    GFF::Feature f;
+    Feature f;
     f.seqid = "Chr";
     f.source = "test";
     f.type = "testgene";
@@ -63,28 +92,4 @@ TEST( FeatureTest, toString ){
     f.strand = '.';
     EXPECT_EQ("Chr\ttest\ttestgene\t20\t30\t.\t.\t.\t", f.toString());
 }
-
-TEST( FeatureTest, fromString ){
-
-    GFF::Feature f;
-    bool ret = f.fromString("Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo");
-    EXPECT_TRUE(ret);
-    EXPECT_EQ("Chr", f.seqid);
-    EXPECT_EQ("test", f.source);
-    EXPECT_EQ("testgene", f.type);
-    EXPECT_EQ(20, f.start);
-    EXPECT_EQ(30, f.end);
-    EXPECT_EQ("0", f.score);
-    EXPECT_EQ('+', f.strand);
-    EXPECT_EQ('0', f.phase);
-    EXPECT_EQ("foo", f.attributes.at(0).value);
-}
-
-TEST( FeatureTest, fromString_invalid ){
-
-    GFF::Feature f;
-    // invalid number of columns
-    // TODO should use expections instead?
-    bool ret = f.fromString("Chr\ttest\ttestgene\t20\t30\t0\t+\t");
-    EXPECT_FALSE(ret);
-}
+*/

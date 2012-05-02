@@ -8,11 +8,14 @@
 bool GFF::Reader::getNextFeature( std::istream& input, Feature& f ){
 
     string temp;
+    Feature a;
     
     while( std::getline( input, temp ).good() ){
-        // TODO this will modify f even if the line is invalid
-        //      kinda sucks
-        if ( f.fromString( temp ) ) return true;
+        if (a.initFromGFF(temp))
+        {
+            f = a;
+            return true;
+        }
     }
 
     return false;

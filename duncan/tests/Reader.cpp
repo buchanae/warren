@@ -8,6 +8,7 @@
 #include "Feature.h"
 #include "Reader.h"
 
+// TODO skip GFF comments
 
 TEST( ReaderTest, getNextFeature ){
 
