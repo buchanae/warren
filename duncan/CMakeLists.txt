@@ -6,8 +6,7 @@ set(
     SRCS
     src/Attributes.cpp
     src/Feature.cpp
-    src/FeatureList.cpp
-    src/FeatureIndex.cpp
+    src/Index.cpp
     src/Reader.cpp
 )
 add_library( duncan ${SRCS} )
@@ -20,11 +19,10 @@ if( build_tests )
 
     enable_testing()
     set(TEST_SRCS
-        tests/Feature.cpp
         tests/Attributes.cpp
-        tests/Reader.cpp
-        tests/FeatureList.cpp
-        tests/FeatureIndex.cpp
+        tests/Feature.cpp
+        tests/Index.cpp
+        #tests/Reader.cpp
     )
     include_directories(
         libs/gmock/include
