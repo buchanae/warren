@@ -17,6 +17,7 @@ namespace GFF
     bool VectorFeatureList::getNextFeature(Feature& f)
     {
         if (iter == end) return false;
+
         f = **iter;
         iter++;
         return true;
@@ -31,6 +32,7 @@ namespace GFF
     bool MapFeatureList::getNextFeature(Feature& f)
     {
         if (iter == end) return false;
+
         f = *(iter->second);
         iter++;
         return true;

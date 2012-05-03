@@ -9,10 +9,12 @@
 
 using std::string;
 
-namespace GFF {
-    namespace Reader {
+namespace GFF
+{
+    namespace Reader
+    {
 
-        bool getNextFeature( std::istream&, Feature& );
+        bool getNextFeature(std::istream&, Feature&);
     }
 }
 

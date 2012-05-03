@@ -10,7 +10,7 @@ using std::string;
 
 namespace GFF
 {
-    Feature::Feature (void)
+    Feature::Feature(void)
     {
         seqid = ".";
         source = ".";
@@ -23,13 +23,14 @@ namespace GFF
         raw_attributes = ".";
     }
 
-    Feature::Feature (const char * raw)
+    Feature::Feature(const char* raw)
     {
         string s(raw);
+
         if (!initFromGFF(s)) throw "Invalid GFF string";
     }
 
-    Feature::Feature (string& raw)
+    Feature::Feature(string& raw)
     {
         if (!initFromGFF(raw)) throw "Invalid GFF string";
     }
@@ -41,7 +42,7 @@ namespace GFF
         tokenizer tokens(raw, separator("\t"));
         std::copy(tokens.begin(), tokens.end(), std::back_inserter(cols));
 
-        if( cols.size() != 9 ) return false;
+        if (cols.size() != 9) return false;
 
         seqid = cols.at(0);
         source = cols.at(1);
@@ -59,18 +60,21 @@ namespace GFF
         return true;
     }
 
-    bool Feature::hasStrand( void ){
+    bool Feature::hasStrand(void)
+    {
         return strand == '+' || strand == '-';
     }
 
-    bool Feature::isRevStrand( void ){
+    bool Feature::isRevStrand(void)
+    {
         return strand == '-';
     }
 
-    int Feature::getLength( void ){
+    int Feature::getLength(void)
+    {
         return end - start + 1;
     }
-    
+
     /* TODO
     string Feature::toString( void ){
         std::stringstream out;

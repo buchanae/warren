@@ -19,17 +19,18 @@ namespace GFF
     typedef std::multimap<string, string>::iterator attribs_iter_t;
     typedef std::pair<attribs_iter_t, attribs_iter_t> attribs_range;
 
-    bool Attributes::addFromGFF (const char * raw)
+    bool Attributes::addFromGFF(const char* raw)
     {
         string s(raw);
         return addFromGFF(s);
     }
 
-    bool Attributes::addFromGFF (string& raw)
+    bool Attributes::addFromGFF(string& raw)
     {
         // split attributes
         // e.g. foo=bar;baz=bat; => foo=bar, baz=bat
         tokenizer tokens(raw, separator(";"));
+
         for (token_iter it = tokens.begin(); it != tokens.end(); ++it)
         {
             // split attribute key-value at "=" char
@@ -48,6 +49,7 @@ namespace GFF
                 // split attribute value at "," char
                 // e.g. val1,val2 => val1, val2
                 tokenizer vals(key_value.at(1), separator(","));
+
                 for (token_iter val_it = vals.begin(); val_it != vals.end(); ++val_it)
                 {
                     // URL decode key and value
@@ -68,15 +70,16 @@ namespace GFF
                 }
             }
         }
+
         return true;
     }
 
-    bool Attributes::has (const string key) const
+    bool Attributes::has(const string key) const
     {
         return key_set.find(key) != key_set.end();
     }
 
-    bool Attributes::raw (const string key, string& value) const
+    bool Attributes::raw(const string key, string& value) const
     {
         if (!has(key)) return false;
 
@@ -84,7 +87,7 @@ namespace GFF
         return true;
     }
 
-    bool Attributes::get (const string key, string& value) const
+    bool Attributes::get(const string key, string& value) const
     {
         if (!has(key)) return false;
 
@@ -92,19 +95,21 @@ namespace GFF
         return true;
     }
 
-    bool Attributes::all (const string key, vector<string>& values)
+    bool Attributes::all(const string key, vector<string>& values)
     {
         if (!has(key)) return false;
 
         attribs_range range = attributes.equal_range(key);
+
         for (attribs_iter_t it = range.first; it != range.second; ++it)
         {
             values.push_back(it->second);
         }
+
         return true;
     }
 
-    void Attributes::keys (std::set<string>& keys) const
+    void Attributes::keys(std::set<string>& keys) const
     {
         return keys.insert(key_set.begin(), key_set.end());
     }

@@ -16,7 +16,7 @@ using testing::ElementsAre;
 using testing::WhenSorted;
 using namespace GFF;
 
-TEST( FeatureListTest, vector_list )
+TEST(FeatureListTest, vector_list)
 {
     Feature a;
     Feature b;
@@ -40,7 +40,7 @@ TEST( FeatureListTest, vector_list )
     EXPECT_FALSE(l->getNextFeature(r));
 }
 
-TEST( FeatureListTest, map_list )
+TEST(FeatureListTest, map_list)
 {
     Feature a;
     Feature b;

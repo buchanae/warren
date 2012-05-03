@@ -8,7 +8,8 @@ using namespace GFF;
 
 // TODO features can have URL escaped characters
 
-TEST( FeatureTest, isRevStrand ){
+TEST(FeatureTest, isRevStrand)
+{
 
     Feature f;
     f.strand = '+';
@@ -21,7 +22,8 @@ TEST( FeatureTest, isRevStrand ){
     EXPECT_TRUE(f.isRevStrand());
 }
 
-TEST( FeatureTest, hasStrand ){
+TEST(FeatureTest, hasStrand)
+{
 
     Feature f;
     f.strand = '+';
@@ -37,7 +39,8 @@ TEST( FeatureTest, hasStrand ){
     EXPECT_FALSE(f.isRevStrand());
 }
 
-TEST( FeatureTest, getLength ){
+TEST(FeatureTest, getLength)
+{
 
     Feature f;
     f.start = 20;
@@ -45,7 +48,8 @@ TEST( FeatureTest, getLength ){
     EXPECT_EQ(11, f.getLength());
 }
 
-TEST( FeatureTest, from_GFF ){
+TEST(FeatureTest, from_GFF)
+{
 
     Feature f("Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo");
     EXPECT_EQ("Chr", f.seqid);
@@ -62,7 +66,7 @@ TEST( FeatureTest, from_GFF ){
     EXPECT_EQ("foo", s);
 }
 
-TEST (FeatureTest, from_GFF_invalid_number_of_columns)
+TEST(FeatureTest, from_GFF_invalid_number_of_columns)
 {
     // TODO more specific exception class
     EXPECT_ANY_THROW(Feature f("Chr\ttest\ttestgene\t20\t30\t0\t+\t"));

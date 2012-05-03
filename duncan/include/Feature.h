@@ -14,9 +14,9 @@ namespace GFF
     class Feature
     {
         public:
-            Feature ( void );
-            Feature (const char *);
-            Feature ( string& );
+            Feature(void);
+            Feature(const char*);
+            Feature(string&);
 
             string seqid;
             string source;
@@ -29,11 +29,11 @@ namespace GFF
             string raw_attributes;
             Attributes attributes;
 
-            bool hasStrand( void );
-            bool isRevStrand( void );
-            bool hasScore( void );
-            double getScore( void );
-            int getLength( void );
+            bool hasStrand(void);
+            bool isRevStrand(void);
+            bool hasScore(void);
+            double getScore(void);
+            int getLength(void);
             // TODO string toString( void );
 
             bool initFromGFF(string&);

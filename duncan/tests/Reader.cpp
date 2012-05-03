@@ -10,7 +10,8 @@
 
 // TODO skip GFF comments
 
-TEST( ReaderTest, getNextFeature ){
+TEST(ReaderTest, getNextFeature)
+{
 
     std::stringstream data;
     data << "Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo" << std::endl;
@@ -18,9 +19,9 @@ TEST( ReaderTest, getNextFeature ){
 
     GFF::Feature f;
 
-    GFF::Reader::getNextFeature( data, f );
-    EXPECT_EQ( "Chr", f.seqid );
+    GFF::Reader::getNextFeature(data, f);
+    EXPECT_EQ("Chr", f.seqid);
 
-    GFF::Reader::getNextFeature( data, f );
-    EXPECT_EQ( "Chr2", f.seqid );
+    GFF::Reader::getNextFeature(data, f);
+    EXPECT_EQ("Chr2", f.seqid);
 }

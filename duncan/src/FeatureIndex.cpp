@@ -22,6 +22,7 @@ namespace GFF
 
         // index by ID
         string ID;
+
         if (f.attributes.get("ID", ID))
         {
             by_ID.insert(make_pair(ID, &f));
@@ -29,9 +30,11 @@ namespace GFF
 
         // index by parent IDs
         vector<string> parent_IDs;
+
         if (f.attributes.all("Parent", parent_IDs))
         {
             vector<string>::iterator IDs_it = parent_IDs.begin();
+
             for (; IDs_it != parent_IDs.end(); ++IDs_it)
             {
                 by_parent_ID.insert(make_pair(*IDs_it, &f));

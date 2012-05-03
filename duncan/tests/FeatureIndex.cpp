@@ -9,7 +9,7 @@ using testing::ElementsAre;
 using testing::WhenSorted;
 using namespace GFF;
 
-TEST( FeatureIndexTest, children )
+TEST(FeatureIndexTest, children)
 {
     Feature a;
     Feature b;
@@ -37,7 +37,7 @@ TEST( FeatureIndexTest, children )
     EXPECT_FALSE(list->getNextFeature(r));
 }
 
-TEST( FeatureIndexTest, type )
+TEST(FeatureIndexTest, type)
 {
     Feature a;
     Feature b;

@@ -12,7 +12,7 @@ using testing::ElementsAre;
 using std::string;
 using std::vector;
 
-TEST (AttributesTest, has)
+TEST(AttributesTest, has)
 {
     Attributes a;
     a.addFromGFF("foo=bar;baz=bat");
@@ -21,7 +21,7 @@ TEST (AttributesTest, has)
     EXPECT_FALSE(a.has("blah"));
 }
 
-TEST (AttributesTest, raw)
+TEST(AttributesTest, raw)
 {
     string s;
     Attributes a;
@@ -30,7 +30,7 @@ TEST (AttributesTest, raw)
     EXPECT_EQ("hello%20world%2Fplanet", s);
 }
 
-TEST (AttributesTest, get)
+TEST(AttributesTest, get)
 {
     string s;
     Attributes a;
@@ -39,7 +39,7 @@ TEST (AttributesTest, get)
     EXPECT_EQ("bar", s);
 }
 
-TEST (AttributesTest, get_first_of_many)
+TEST(AttributesTest, get_first_of_many)
 {
     string s;
     Attributes a;
@@ -48,7 +48,7 @@ TEST (AttributesTest, get_first_of_many)
     EXPECT_EQ("bar", s);
 }
 
-TEST (AttributesTest, get_empty_value)
+TEST(AttributesTest, get_empty_value)
 {
     string s;
     Attributes a;
@@ -57,7 +57,7 @@ TEST (AttributesTest, get_empty_value)
     EXPECT_EQ("", s);
 }
 
-TEST (AttributesTest, get_decoded_value)
+TEST(AttributesTest, get_decoded_value)
 {
     string s;
     Attributes a;
@@ -66,7 +66,7 @@ TEST (AttributesTest, get_decoded_value)
     EXPECT_EQ("hello world,planet", s);
 }
 
-TEST (AttributesTest, invalid_attrib_is_ignored)
+TEST(AttributesTest, invalid_attrib_is_ignored)
 {
     string s = "default";
     Attributes a;
@@ -75,7 +75,7 @@ TEST (AttributesTest, invalid_attrib_is_ignored)
     EXPECT_EQ("default", s);
 }
 
-TEST (AttributesTest, all)
+TEST(AttributesTest, all)
 {
     vector<string> v;
     Attributes a;
@@ -85,7 +85,7 @@ TEST (AttributesTest, all)
     EXPECT_THAT(v, ElementsAre("bar,baz", "bat"));
 }
 
-TEST (AttributesTest, funky_attribute_def)
+TEST(AttributesTest, funky_attribute_def)
 {
     vector<string> v;
     Attributes a;
