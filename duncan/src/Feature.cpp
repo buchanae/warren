@@ -4,6 +4,7 @@
 
 #include "Attributes.h"
 #include "Feature.h"
+#include "Index.h"
 #include "tokenizer.h"
 
 using std::string;
@@ -73,6 +74,35 @@ namespace GFF
     int Feature::getLength(void)
     {
         return end - start + 1;
+    }
+
+    bool Feature::spliceJunctions(vector<Feature>& juncs)
+    {
+        TypeIndex types;
+        types.add(children.begin(), children.end());
+        vector<Feature> exons;
+        types.type("exon", exons);
+
+        if (exons.size() < 2) return false;
+
+        Feature f;
+        f.seqid = seqid;
+        f.source = source;
+        f.type = "splice_junction";
+        f.strand = strand;
+
+        vector<Feature>::iterator it = exons.begin();
+        while (it != exons.end())
+        {
+            f.start = it->end;
+            ++it;
+            if (it != exons.end())
+            {
+                f.end = it->start;
+                juncs.push_back(f);
+            }
+        }
+        return true;
     }
 
     /* TODO

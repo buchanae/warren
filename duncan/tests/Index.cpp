@@ -6,52 +6,17 @@
 #include "Feature.h"
 #include "Index.h"
 
+using namespace GFF;
 using testing::ElementsAre;
 using testing::WhenSorted;
-using namespace GFF;
 
-TEST(IndexTest, size)
+TEST(TypeIndexTest, filter_type)
 {
+    typedef vector<Feature>::iterator Feature_iter;
+
     Feature a;
     Feature b;
     Feature c;
-    Index index;
-
-    index.add(&a);
-    index.add(&b);
-    index.add(&c);
-
-    EXPECT_EQ(3, (int)index.size());
-}
-
-TEST(IndexTest, iteration)
-{
-    Feature a;
-    Feature b;
-    Feature c;
-    Index index;
-
-    index.add(&a);
-    index.add(&b);
-    index.add(&c);
-
-    std::vector<Feature*> features;
-    Index::iterator it = index.begin();
-
-    for (Index::iterator it = index.begin(); it != index.end(); ++it)
-    {
-        features.push_back(*it);
-    }
-    
-    EXPECT_THAT(features, ElementsAre(&a, &b, &c));
-}
-
-TEST(IndexTest, filterType)
-{
-    Feature a;
-    Feature b;
-    Feature c;
-    Index index;
 
     a.seqid = "one";
     b.seqid = "two";
@@ -61,33 +26,67 @@ TEST(IndexTest, filterType)
     b.type = "type2";
     c.type = "type1";
 
-    index.add(&a);
-    index.add(&b);
-    index.add(&c);
+    TypeIndex index;
+    index.add(a);
+    index.add(b);
+    index.add(c);
 
-    Index* type1_index = index.filterType("type1");
+    vector<Feature> ret;
+    index.type("type1", ret);
+
     vector<string> seqids;
 
-    for (Index::iterator it = type1_index->begin(); it != type1_index->end(); ++it)
+    for (Feature_iter it = ret.begin(); it != ret.end(); ++it)
     {
-        seqids.push_back((*it)->seqid);
+        seqids.push_back(it->seqid);
     }
     EXPECT_THAT(seqids, WhenSorted(ElementsAre("one", "three")));
 
+    ret.clear();
     seqids.clear();
-    Index* type2_index = index.filterType("type2");
 
-    for (Index::iterator it = type2_index->begin(); it != type2_index->end(); ++it)
+    index.type("type2", ret);
+
+    for (Feature_iter it = ret.begin(); it != ret.end(); ++it)
     {
-        seqids.push_back((*it)->seqid);
+        seqids.push_back(it->seqid);
     }
     EXPECT_THAT(seqids, WhenSorted(ElementsAre("two")));
 }
 
-/*
+TEST(ParentChildIndexTest, children)
+{
+    typedef vector<Feature>::iterator Feature_iter;
+
+    Feature a;
+    Feature b;
+    Feature c;
+
     a.attributes.addFromGFF("ID=one;");
     b.attributes.addFromGFF("ID=two;Parent=one");
     c.attributes.addFromGFF("ID=three;Parent=one");
-*/
+
+    ParentChildIndex index;
+    index.add(a);
+    index.add(b);
+    index.add(c);
+
+    vector<Feature> ret;
+    index.childrenOf(a, ret);
+
+    vector<string> IDs;
+
+    for (Feature_iter it = ret.begin(); it != ret.end(); ++it)
+    {
+        string ID = "";
+        it->attributes.get("ID", ID);
+        IDs.push_back(ID);
+    }
+    EXPECT_THAT(IDs, WhenSorted(ElementsAre("three", "two")));
+
+    ret.clear();
+    index.childrenOf(b, ret);
+    EXPECT_EQ(0, ret.size());
+}
 
 // TODO test children() when feature doesn't have ID

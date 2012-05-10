@@ -12,23 +12,40 @@ using std::vector;
 
 namespace GFF
 {
-    class Index
+    class IndexBase
     {
+        typedef vector<Feature>::iterator Feature_iter;
+
         public:
-            typedef vector<Feature*>::iterator iterator;
-
-            void add(Feature*);
-
-            iterator begin(void);
-            iterator end(void);
-            size_t size(void);
-
-            Index* filterType(const string&);
-            // TODO Index* filterType(vector<string>);
+            void add(Feature&);
+            void add(Feature_iter, Feature_iter);
 
         private:
-            vector<Feature*> all_features;
-            std::multimap<string, Feature*> features_by_type;
+            virtual void index(Feature&) = 0;
+    };
+
+    class TypeIndex : public IndexBase
+    {
+        typedef std::map<string, Feature>::iterator map_iter;
+        std::multimap<string, Feature> by_type;
+
+        public:
+            void type(const string&, vector<Feature>&);
+
+        private:
+            virtual void index(Feature&);
+    };
+
+    class ParentChildIndex : public IndexBase
+    {
+        typedef std::map<string, Feature>::iterator map_iter;
+        std::multimap<string, Feature> by_parent_ID;
+
+        public:
+            void childrenOf(Feature&, vector<Feature>&);
+
+        private:
+            virtual void index(Feature&);
     };
 }
 #endif

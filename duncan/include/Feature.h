@@ -29,11 +29,14 @@ namespace GFF
             string raw_attributes;
             Attributes attributes;
 
+            std::vector<Feature> children;
+
             bool hasStrand(void);
             bool isRevStrand(void);
             bool hasScore(void);
             double getScore(void);
             int getLength(void);
+            bool spliceJunctions(std::vector<Feature>&);
             // TODO string toString( void );
 
             bool initFromGFF(string&);

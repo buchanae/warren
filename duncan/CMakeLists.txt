@@ -22,7 +22,7 @@ if( build_tests )
         tests/Attributes.cpp
         tests/Feature.cpp
         tests/Index.cpp
-        #tests/Reader.cpp
+        tests/Reader.cpp
     )
     include_directories(
         libs/gmock/include
