@@ -5,12 +5,17 @@
 #include <map>
 #include <vector>
 
+#include <boost/assign/list_of.hpp>
+
 #include "Attributes.h"
 
 using std::string;
+using std::vector;
 
 namespace GFF
 {
+    extern vector<string> default_exon_types;
+
     class Feature
     {
         public:
@@ -29,14 +34,14 @@ namespace GFF
             string raw_attributes;
             Attributes attributes;
 
-            std::vector<Feature> children;
+            vector<Feature> children;
 
             bool hasStrand(void);
             bool isRevStrand(void);
             bool hasScore(void);
             double getScore(void);
             int getLength(void);
-            bool spliceJunctions(std::vector<Feature>&);
+            bool spliceJunctions(vector<Feature>&, vector<string>& = default_exon_types);
             // TODO string toString( void );
 
             bool initFromGFF(string&);

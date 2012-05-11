@@ -12,6 +12,8 @@ using std::string;
 
 namespace GFF
 {
+    vector<string> default_exon_types = boost::assign::list_of("exon");
+
     Feature::Feature(void)
     {
         seqid = ".";
@@ -77,12 +79,17 @@ namespace GFF
         return end - start + 1;
     }
 
-    bool Feature::spliceJunctions(vector<Feature>& juncs)
+    bool Feature::spliceJunctions(vector<Feature>& juncs, vector<string>& exon_type_names)
     {
         TypeIndex types;
         types.add(children.begin(), children.end());
+
         vector<Feature> exons;
-        types.type("exon", exons);
+        for (vector<string>::iterator it = exon_type_names.begin();
+             it != exon_type_names.end(); ++it)
+        {
+            types.type(*it, exons);
+        }
 
         PositionComparison compare_by_position;
         std::sort(exons.begin(), exons.end(), compare_by_position);

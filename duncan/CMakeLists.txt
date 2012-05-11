@@ -37,10 +37,8 @@ if( build_tests )
         libs/gmock/gtest/src/gtest_main.cc
     )
     add_executable(
-        duncan_tests
-        ${SRCS}
+        tests
         ${TEST_SRCS}
     )
-    target_link_libraries( duncan_tests ${LIBS} gmock )
-    add_test( all-tests duncan_tests )
+    target_link_libraries( tests duncan ${LIBS} gmock )
 endif()
