@@ -113,7 +113,6 @@ TEST(FeatureTest, spliceJunctions)
     EXPECT_EQ(2, ret.size());
 }
 
-/*
 TEST(FeatureTest, spliceJunctions_reverse_strand)
 {
     // Feature objects representing splice junctions will always have
@@ -155,7 +154,6 @@ TEST(FeatureTest, spliceJunctions_reverse_strand)
 
     EXPECT_EQ(2, ret.size());
 }
-*/
 
 /*
 TEST( FeatureTest, toString ){
