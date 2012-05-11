@@ -114,6 +114,50 @@ TEST(FeatureTest, spliceJunctions)
 }
 
 /*
+TEST(FeatureTest, spliceJunctions_reverse_strand)
+{
+    // Feature objects representing splice junctions will always have
+    // a start position less than end position.
+
+    // since GFF features on the reverse strand may come in opposite order,
+    // we need to flip these positions around, and that's what we're testing here.
+
+    Feature a;
+    Feature b;
+    Feature c;
+    Feature d;
+
+    b.type = "exon";
+    b.start = 30;
+    b.end = 40;
+
+    c.type = "exon";
+    c.start = 10;
+    c.end = 20;
+
+    d.type = "exon";
+    d.start = 60;
+    d.end = 65;
+
+    a.children.push_back(b);
+    a.children.push_back(c);
+    a.children.push_back(d);
+
+    vector<Feature> ret;
+    EXPECT_TRUE(a.spliceJunctions(ret));
+
+    EXPECT_EQ("splice_junction", ret.at(0).type);
+    EXPECT_EQ("splice_junction", ret.at(1).type);
+    EXPECT_EQ(20, ret.at(0).start);
+    EXPECT_EQ(30, ret.at(0).end);
+    EXPECT_EQ(40, ret.at(1).start);
+    EXPECT_EQ(60, ret.at(1).end);
+
+    EXPECT_EQ(2, ret.size());
+}
+*/
+
+/*
 TEST( FeatureTest, toString ){
 
     Feature f;

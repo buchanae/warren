@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <sstream>
 #include <stdlib.h>
 #include <vector>
@@ -82,6 +83,9 @@ namespace GFF
         types.add(children.begin(), children.end());
         vector<Feature> exons;
         types.type("exon", exons);
+
+        PositionComparison compare_by_position;
+        std::sort(exons.begin(), exons.end(), compare_by_position);
 
         if (exons.size() < 2) return false;
 

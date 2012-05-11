@@ -41,5 +41,16 @@ namespace GFF
 
             bool initFromGFF(string&);
     };
+
+    struct PositionComparison
+    {
+        bool operator() (const Feature& a, const Feature& b) const
+        {
+            return (a.seqid < b.seqid)
+                   || (a.seqid == b.seqid && a.start < b.start)
+                   || (a.seqid == b.seqid && a.start == b.start
+                       && a.end < b.end);
+        }
+    };
 }
 #endif
