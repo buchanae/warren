@@ -1,11 +1,11 @@
 #ifndef _GFF_FEATURE_H
 #define _GFF_FEATURE_H
 
-#include <string>;
-#include <map>;
-#include <vector>;
+#include <string>
+#include <map>
+#include <vector>
 
-#include "Attributes.h";
+#include "Attributes.h"
 
 using std::string;
 
