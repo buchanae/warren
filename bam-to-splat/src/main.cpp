@@ -10,6 +10,28 @@
 
 #define VERSION "0.1"
 
+using std::endl;
+using std::cerr;
+using std::cout;
+
+using AlignmentUtils::Alignment;
+using AlignmentUtils::BamMultiReader;
+using AlignmentUtils::BamPool;
+using AlignmentUtils::BamPoolReader;
+using AlignmentUtils::Splat;
+
+struct CompareSplats
+{
+    bool operator() (const Alignment& a, const Alignment& b) const
+    {
+        return (a.RefName < b.RefName)
+               || (a.RefName == b.RefName && a.position() < b.position())
+               || (a.RefName == b.RefName && a.position() < b.position()
+                   && (AlignmentUtils::toString(a.CigarData) 
+                       < AlignmentUtils::toString(b.CigarData)));
+    }
+};
+
 int main (int argc, char * argv[])
 {
     string output_file_path;
@@ -20,7 +42,7 @@ int main (int argc, char * argv[])
         TCLAP::CmdLine cmd("Program description", ' ', VERSION);
 
         TCLAP::MultiArg<string> bamFilesArg("b", "bam", "Input BAM file", 
-                                         true, "", "input.bam", cmd);
+                                         true, "input.bam", cmd);
         TCLAP::ValueArg<string> outputFileArg("o", "output", "Output file", 
                                               true, "", "output.splat", cmd);
 
@@ -55,9 +77,10 @@ int main (int argc, char * argv[])
     }
 
     BamMultiReader reader;
-    reader.Open(bam_file_names);
+    reader.Open(bam_file_paths);
 
-    BamPool pool(reader.GetReferenceData());
+    BamTools::RefVector refs = reader.GetReferenceData();
+    BamPool<CompareSplats> pool(refs);
 
     Alignment alignment;
     while (reader.GetNextAlignment(alignment))
@@ -65,7 +88,7 @@ int main (int argc, char * argv[])
         if (isSplat(alignment)) pool.add(alignment);
     }
 
-    BamPoolReader pool_reader = pool.getReader();
+    BamPoolReader<CompareSplats> pool_reader = pool.getReader();
     Splat prev;
 
     while (pool_reader.GetNextAlignment(alignment))
