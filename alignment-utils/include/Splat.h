@@ -13,6 +13,8 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
+namespace AlignmentUtils {
+
 struct SplatPosition
 {
     int a_start;
@@ -52,12 +54,12 @@ struct Splat
         return buffer.str();
     }
 
-    bool shouldMerge (splat_t& other)
+    bool shouldMerge (Splat& other)
     {
         return ref == other.ref && pos == other.pos;
     }
 
-    void merge (splat_t& other)
+    void merge (Splat& other)
     {
         read_IDs.insert(read_IDs.end(), other.read_IDs.begin(), other.read_IDs.end());
     }
@@ -92,4 +94,5 @@ Splat toSplat (Alignment& al)
     return splat;
 }
 
+}
 #endif

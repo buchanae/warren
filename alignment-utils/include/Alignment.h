@@ -1,14 +1,20 @@
 #ifndef ALIGNMENTUTILS_ALIGNMENT_H
 #define ALIGNMENTUTILS_ALIGNMENT_H
 
+#include <sstream>
 #include <string>
 
-#include "api/BamAlignment.h"
+#include "bamtools/api/BamAlignment.h"
 
-#include "Feature.h"
+using std::string;
+using std::stringstream;
+using std::vector;
 
 using BamTools::BamAlignment;
 using BamTools::CigarOp;
+
+namespace AlignmentUtils
+{
 
 class Alignment : public BamAlignment
 {
@@ -17,8 +23,7 @@ class Alignment : public BamAlignment
 
         Alignment(void);
         Alignment(BamAlignment& other);
-        bool getJunction(GFF::Feature&);
-        int position(void);
+        int position(void) const;
         void position(int);
 
     private:
@@ -28,32 +33,11 @@ class Alignment : public BamAlignment
         BamAlignment::Position;
 };
 
-string toString(vector<CigarOp>& cd)
-{
-    stringstream ss;
-    string out = "";
-    vector<CigarOp>::iterator iter = cd.begin();
-    for( ; iter != cd.end() ; ++iter ){
-        ss << iter->Length << iter->Type;
-    }
-    ss >> out;
-    return out;
-}
+string toString(const vector<CigarOp>& cd);
 
-int sumCigar(vector<CigarOp>& cigar)
-{
-    int length = 0;
-    for (unsigned int i = 0; i < cigar.size(); i++)
-    {
-        length += cigar.at(i).Length;
-    }
-    return length;
-}
+int sumCigar(vector<CigarOp>& cigar);
 
-// Calculate paired-end gapped alignments using the CigarOp data
-// NOT the length of the query sequence
-int pairedGapLength(Alignment& a, Alignment& b)
-{
-    return b.position() - a.position() + sumCigar(a) - 2;
+int pairedGapLength(Alignment& a, Alignment& b);
+
 }
 #endif

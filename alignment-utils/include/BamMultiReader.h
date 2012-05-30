@@ -1,9 +1,11 @@
-#ifndef ISOSIGNAL_BAMMULTIREADER_H
-#define ISOSIGNAL_BAMMULTIREADER_H
+#ifndef ALIGNMENTUTILS_BAMMULTIREADER_H
+#define ALIGNMENTUTILS_BAMMULTIREADER_H
 
-#include "api/BamMultiReader.h"
+#include "bamtools/api/BamMultiReader.h"
 
 #include "Alignment.h"
+
+namespace AlignmentUtils {
 
 class BamMultiReader : public BamTools::BamMultiReader
 {
@@ -17,4 +19,5 @@ class BamMultiReader : public BamTools::BamMultiReader
         }
 };
 
+}
 #endif

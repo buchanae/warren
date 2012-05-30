@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <vector>
 
-#include "api/BamAux.h"
-#include "api/BamWriter.h"
+#include "bamtools/api/BamAux.h"
+#include "bamtools/api/BamWriter.h"
 
 #include "Alignment.h"
 #include "BamMultiReader.h"
@@ -13,8 +13,7 @@
 using std::vector;
 using std::string;
 
-using BamTools::BamWriter;
-using BamTools::RefVector;
+namespace AlignmentUtils {
 
 template<class Compare>
 void BamPoolReader<Compare>::init (void)
@@ -46,7 +45,7 @@ void BamPoolReader<Compare>::init (void)
 }
 
 template<class Compare>
-bool BamPoolReader::GetNextAlignment(Alignment& alignment)
+bool BamPoolReader<Compare>::GetNextAlignment(Alignment& alignment)
 {
     if (!initialized) init();
 
@@ -76,7 +75,7 @@ template<class Compare>
 BamPool<Compare>::~BamPool ()
 {
     // remove temporary files
-    for (vector<string>::iterator it = filenames.begin(); it != filenames.end(); ++it)
+    for (vector<string>::iterator it = file_names.begin(); it != file_names.end(); ++it)
     {
         remove(it->c_str());
     }
@@ -112,7 +111,7 @@ void BamPool<Compare>::flush (void)
         // TODO should really throw error here
         // TODO bad to assume we can use std::cerr
     }
-    filenames.push_back(path);
+    file_names.push_back(path);
 
     // dump buffer to file
     for (buffer_t::iterator it = buffer.begin(); it != buffer.end(); ++it)
@@ -127,10 +126,30 @@ void BamPool<Compare>::flush (void)
 }
 
 template<class Compare>
-void BamPool<Compare>::add (BamAlignment& alignment)
+void BamPool<Compare>::add (Alignment& alignment)
 {
     // flush buffer if it's full
     if (buffer.size() >= MAX_SIZE) flush();
 
     buffer.push_back(alignment);
+}
+
+template<class Compare>
+void BamPool<Compare>::setMaxBufferSize(int max)
+{
+    MAX_SIZE = max;
+}
+
+template<class Compare>
+void BamPool<Compare>::setTmpDir(string& tmp)
+{
+    TMP_DIR = tmp;
+}
+
+template<class Compare>
+BamPoolReader<Compare> BamPool<Compare>::getReader (void)
+{
+    return BamPoolReader<Compare>(file_names);
+}
+
 }
