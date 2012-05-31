@@ -1,5 +1,5 @@
-#ifndef ALIGNMENTUTILS_SPLAT_H
-#define ALIGNMENTUTILS_SPLAT_H
+#ifndef WARREN_SPLAT_H
+#define WARREN_SPLAT_H
 
 #include <string>
 #include <sstream>
@@ -13,50 +13,71 @@ using std::string;
 using std::stringstream;
 using std::vector;
 
-namespace AlignmentUtils {
+bool isSplat (Alignment& al)
+{
+    return al.HasTag("XD");
+}
 
 struct SplatPosition
 {
+    string ref;
     int a_start;
     int a_end;
     int b_start;
     int b_end;
 
     bool operator== ( const SplatPosition& other ) const {
-        return a_start == other.a_start && a_end == other.a_end 
-               && b_start == other.b_start && b_end == other.b_end;
+        return ref == other.ref
+            && a_start == other.a_start
+            && a_end == other.a_end 
+            && b_start == other.b_start
+            && b_end == other.b_end;
     }
 };
 
 struct Splat
 {
-    string ref;
     string flanks;
-    SplatPosition pos;
+    SplatPosition position;
     string seq;
     vector<string> read_IDs;
 
-    string str(void)
+    Splat (Alignment& al)
+    {
+        position.ref = al.RefName;
+        al.GetTag("XD", flanks);
+
+        position.a_start = al.positionition();
+        position.a_end = position.a_start + al.CigarData.at(0).Length - 1;
+        position.b_start = position.a_end + al.CigarData.at(1).Length + 1;
+        position.b_end = position.b_start + al.CigarData.at(2).Length - 1;
+
+        seq = al.QueryBases;
+
+        string strand = al.IsReverseStrand() ? "-" : "+";
+
+        stringstream read_ID (stringstream::in | stringstream::out);
+        read_ID << strand;
+        read_ID << al.Name;
+        read_IDs.push_back(read_ID.str());
+    }
+
+    void toString (string& output)
     {
         stringstream buffer;
 
-        buffer << ref << "\t";
+        buffer << position.ref << "\t";
         buffer << flanks << "\t";
-        buffer << pos.a_end - pos.a_start + 1 << "\t";
-        buffer << pos.b_end - pos.b_start + 1 << "\t";
-        buffer << pos.b_start - pos.a_end - 1 << "\t";
-        buffer << pos.a_start << "\t" << pos.a_end << "\t";
-        buffer << pos.b_start << "\t" << pos.b_end << "\t";
+        buffer << position.a_end - position.a_start + 1 << "\t";
+        buffer << position.b_end - position.b_start + 1 << "\t";
+        buffer << position.b_start - position.a_end - 1 << "\t";
+        buffer << position.a_start << "\t" << position.a_end << "\t";
+        buffer << position.b_start << "\t" << position.b_end << "\t";
         buffer << seq << "\t";
         buffer << read_IDs.size() << "\t";
         buffer << boost::algorithm::join(read_IDs, ",");
 
-        return buffer.str();
-    }
-
-    bool shouldMerge (Splat& other)
-    {
-        return ref == other.ref && pos == other.pos;
+        output = buffer.str();
     }
 
     void merge (Splat& other)
@@ -65,34 +86,4 @@ struct Splat
     }
 };
 
-bool isSplat(Alignment& al)
-{
-    return al.HasTag("XD");
-}
-
-Splat toSplat (Alignment& al)
-{
-    Splat splat;
-
-    splat.ref = al.RefName;
-    al.GetTag("XD", splat.flanks);
-
-    splat.pos.a_start = al.position();
-    splat.pos.a_end = splat.pos.a_start + al.CigarData.at(0).Length - 1;
-    splat.pos.b_start = splat.pos.a_end + al.CigarData.at(1).Length + 1;
-    splat.pos.b_end = splat.pos.b_start + al.CigarData.at(2).Length - 1;
-
-    splat.seq = al.QueryBases;
-
-    string strand = al.IsReverseStrand() ? "-" : "+";
-
-    stringstream read_ID (stringstream::in | stringstream::out);
-    read_ID << strand;
-    read_ID << al.Name;
-    splat.read_IDs.push_back(read_ID.str());
-
-    return splat;
-}
-
-}
 #endif

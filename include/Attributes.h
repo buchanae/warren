@@ -1,5 +1,5 @@
-#ifndef _GFF_ATTRIBUTES_H
-#define _GFF_ATTRIBUTES_H
+#ifndef WARREN_ATTRIBUTES_H
+#define WARREN_ATTRIBUTES_H
 
 #include <map>
 #include <set>
@@ -8,24 +8,21 @@
 
 using std::string;
 
-namespace GFF
+class Attributes
 {
-    class Attributes
-    {
-        public:
-            bool has(const string) const;
-            bool raw(const string, string&) const;
-            bool get(const string, string&) const;
-            bool all(const string, std::vector<string>&);  // TODO const?
-            void keys(std::set<string>&) const;
+    std::multimap<string, string> attributes;
+    std::map<string, string> raw_values;
+    std::set<string> key_set;
 
-            bool addFromGFF(const char*);
-            bool addFromGFF(string&);
+    public:
+        bool has (const string) const;
+        bool raw (const string, string&) const;
+        bool get (const string, string&) const;
+        bool all (const string, std::vector<string>&);  // TODO const?
+        void keys (std::set<string>&) const;
 
-        private:
-            std::multimap<string, string> attributes;
-            std::map<string, string> raw_values;
-            std::set<string> key_set;
-    };
-}
+        bool addFromGFF (const char*);
+        bool addFromGFF (string&);
+};
+
 #endif

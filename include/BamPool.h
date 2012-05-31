@@ -1,5 +1,5 @@
-#ifndef ALIGNMENTUTILS_BAMPOOL_H
-#define ALIGNMENTUTILS_BAMPOOL_H
+#ifndef WARREN_BAMPOOL_H
+#define WARREN_BAMPOOL_H
 
 #include <iostream>
 #include <map>
@@ -21,8 +21,6 @@ using std::vector;
 using BamTools::BamWriter;
 using BamTools::RefVector;
 
-namespace AlignmentUtils {
-
 template<class Compare>
 class BamPoolReader
 {
@@ -36,7 +34,7 @@ class BamPoolReader
             return comparator(alignment, other.alignment);
         }
 
-        bool readNext(void)
+        bool readNext (void)
         {
             return reader->GetNextAlignment(alignment);
         }
@@ -204,5 +202,4 @@ class BamPool
         }
 };
 
-}
 #endif

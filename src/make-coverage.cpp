@@ -88,11 +88,11 @@ int main (int argc, char* argv[])
         return 0;
     }
 
-    JunctionFilter filter;
+    UniquePositionIndex junctions;
 
     cerr << "Loading splice junctions from reference GFF." << endl;
 
-    indexJunctionsFromGFF(gff_stream, filter.junction_index);
+    indexJunctionsFromGFF(gff_stream, junctions);
 
     cerr << "Loading splice junctions from stack files." << endl;
 
@@ -108,11 +108,11 @@ int main (int argc, char* argv[])
         }
         else
         {
-            indexJunctionsFromStack(stack_stream, filter.junction_index);
+            indexJunctionsFromStack(stack_stream, junctions);
         }
     }
 
-    cerr << "Found " << filter.junction_index.uniqueCount();
+    cerr << "Found " << junctions.count();
     cerr << " unique splice junctions." << endl;
 
     Coverage coverage;
@@ -131,7 +131,11 @@ int main (int argc, char* argv[])
     Alignment al;
     while (reader.GetNextAlignment(al))
     {
-        if (filter(al)) coverage.add(al);
+        Feature junction;
+        if (al.getJunction(junction) && junctions.contains(junction))
+        {
+            coverage.add(al);
+        }
     }
 
     reader.Close();

@@ -98,7 +98,7 @@ int main (int argc, char * argv[])
         if (prev.ref.empty()) prev = splat;
         else
         {
-            if (splat.shouldMerge(prev)) splat.merge( prev );
+            if (splat.position == prev.position) splat.merge( prev );
             else *output_stream << prev.str() << endl;
 
             prev = splat;

@@ -1,61 +1,119 @@
-#ifndef _GFF_FEATURE_H
-#define _GFF_FEATURE_H
+#ifndef WARREN_FEATURE_H
+#define WARREN_FEATURE_H
 
-#include <string>
 #include <map>
+#include <set>
+#include <sstream>
+#include <string>
 #include <vector>
 
 #include <boost/assign/list_of.hpp>
+#include <boost/algorithm/string.cpp>
 
 #include "Attributes.h"
+#include "tokenizer.h"
 
 using std::string;
 using std::vector;
 
-namespace GFF
+using boost::algorithm::list_of;
+using boost::algorithm::to_lower;
+
+struct Feature
 {
-    extern vector<string> default_exon_types;
+    std::set<string> transcript_types;    
+    std::set<string> exon_types;    
 
-    class Feature
+    Feature(void)
     {
-        public:
-            Feature(void);
-            Feature(const char*);
-            Feature(string&);
+        seqid = ".";
+        source = ".";
+        type = ".";
+        start = 0;
+        end = 0;
+        score = ".";
+        strand = '.';
+        phase = '.';
+        raw_attributes = ".";
 
-            string seqid;
-            string source;
-            string type;
-            unsigned int start;
-            unsigned int end;
-            string score;
-            char strand;
-            char phase;
-            string raw_attributes;
-            Attributes attributes;
+        transcript_types = list_of("mrna", "mrna_te_gene", "ncrna", "mirna", "snorna",
+                                   "snrna", "rrna", "trna", "pseudogenic_transcript");
 
-            vector<Feature> children;
+        exon_types = list_of("exon", "pseudogenic_exon");
+    }
 
-            bool hasStrand(void);
-            bool isRevStrand(void);
-            bool hasScore(void);
-            double getScore(void);
-            int getLength(void);
-            bool spliceJunctions(vector<Feature>&, vector<string>& = default_exon_types);
-            // TODO string toString( void );
-
-            bool initFromGFF(string&);
-    };
-
-    struct PositionComparison
+    bool initFromGFF(string&);
     {
-        bool operator() (const Feature& a, const Feature& b) const
-        {
-            return (a.seqid < b.seqid)
-                   || (a.seqid == b.seqid && a.start < b.start)
-                   || (a.seqid == b.seqid && a.start == b.start
-                       && a.end < b.end);
-        }
-    };
-}
+        // split the tab-delimited columns
+        std::vector<string> cols;
+        tokenizer tokens(raw, separator("\t"));
+        std::copy(tokens.begin(), tokens.end(), std::back_inserter(cols));
+
+        if (cols.size() != 9) return false;
+
+        seqid = cols.at(0);
+        source = cols.at(1);
+        type = cols.at(2);
+        start = atoi(cols.at(3).c_str());
+        end = atoi(cols.at(4).c_str());
+        score = cols.at(5);
+        strand = *(cols.at(6).c_str());
+        phase = *(cols.at(7).c_str());
+
+        raw_attributes = cols.at(8);
+        attributes = Attributes();
+        attributes.addFromGFF(raw_attributes);
+
+        return true;
+    }
+
+    string seqid;
+    string source;
+    string type;
+    unsigned int start;
+    unsigned int end;
+    string score;
+    char strand;
+    char phase;
+    string raw_attributes;
+    Attributes attributes;
+
+    vector<Feature> children;
+
+    bool hasStrand(void) const
+    {
+        return strand == '+' || strand == '-';
+    }
+
+    bool isRevStrand(void) const
+    {
+        return strand == '-';
+    }
+
+    int getLength(void) const
+    {
+        return end - start + 1;
+    }
+
+    bool isTranscriptType(Feature& f)
+    {
+        return transcript_types.find(to_lower(f.type)) != transcript_types.end();
+    }
+
+    bool isExonType(Feature& f)
+    {
+        return exon_types.find(to_lower(f.type)) != exon_types.end();
+    }
+};
+
+struct FeaturePositionComparator
+{
+    bool operator() (const Feature& a, const Feature& b) const
+    {
+        return (a.seqid < b.seqid)
+            || (a.seqid == b.seqid && a.start < b.start)
+            || (a.seqid == b.seqid && a.start == b.start && a.end < b.end);
+    }
+};
+
 #endif

@@ -1,51 +1,50 @@
-#ifndef _GFF_FEATUREINDEX_H
-#define _GFF_FEATUREINDEX_H
+#ifndef WARREN_INDEX_H
+#define WARREN_INDEX_H
 
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
 #include "Feature.h"
 
+using std::map;
+using std::multimap;
 using std::string;
 using std::vector;
 
-namespace GFF
+class TypeIndex
 {
-    class IndexBase
-    {
-        typedef vector<Feature>::iterator Feature_iter;
+    typedef map<string, Feature>::iterator map_iter;
+    multimap<string, Feature> by_type;
 
-        public:
-            void add(Feature&);
-            void add(Feature_iter, Feature_iter);
+    public:
+        void type (const string&, vector<Feature>&);
+        void add (Feature&);
+};
 
-        private:
-            virtual void index(Feature&) = 0;
-    };
+class ChildrenIndex
+{
+    typedef map<string, Feature>::iterator map_iter;
+    multimap<string, Feature> by_parent_ID;
 
-    class TypeIndex : public IndexBase
-    {
-        typedef std::map<string, Feature>::iterator map_iter;
-        std::multimap<string, Feature> by_type;
+    public:
+        void add (Feature&);
 
-        public:
-            void type(const string&, vector<Feature>&);
+        void childrenOf (Feature&, vector<Feature>&);
+};
 
-        private:
-            virtual void index(Feature&);
-    };
+class UniquePositionIndex
+{
+    std::set<Feature, FeaturePositionComparator> features;
 
-    class ParentChildIndex : public IndexBase
-    {
-        typedef std::map<string, Feature>::iterator map_iter;
-        std::multimap<string, Feature> by_parent_ID;
+    public:
+        void add(Feature&);
 
-        public:
-            void childrenOf(Feature&, vector<Feature>&);
+        void overlappingFeature(Feature&, std::vector<Feature>&);
+        bool contains(Feature&);
+        void all(std::vector<Feature>&);
+        int count(void);
+};
 
-        private:
-            virtual void index(Feature&);
-    };
-}
 #endif

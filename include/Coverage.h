@@ -17,7 +17,8 @@ using std::string;
 class Coverage
 {
     public:
-        std::map<std::string, vector<int> > coverages;
+        typedef std::map<std::string, vector<int> > coverages_t;
+        coverages_t coverages;
 
         // be careful with get/set/increment, they will throw out of range errors
         // if you haven't initialized the references
@@ -29,12 +30,11 @@ class Coverage
 
         void add(Alignment& alignment);
         void add(string ref_name, int start, int length);
+
+        void load(std::istream& input);
+
+        void toOutputStream(std::ostream& output);
+        void toString(std::string& output);
 };
-
-void loadCoverage(std::istream& coverage_stream, Coverage& coverage);
-
-void formatGMBCoverage(Coverage& coverage, std::ostream& coverage_stream);
-
-void formatGMBCoverage(Coverage& coverage, std::string& output);
 
 #endif

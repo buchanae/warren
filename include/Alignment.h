@@ -1,5 +1,5 @@
-#ifndef ALIGNMENTUTILS_ALIGNMENT_H
-#define ALIGNMENTUTILS_ALIGNMENT_H
+#ifndef WARREN_ALIGNMENT_H
+#define WARREN_ALIGNMENT_H
 
 #include <sstream>
 #include <string>
@@ -13,9 +13,6 @@ using std::vector;
 using BamTools::BamAlignment;
 using BamTools::CigarOp;
 
-namespace AlignmentUtils
-{
-
 class Alignment : public BamAlignment
 {
     public:
@@ -23,6 +20,7 @@ class Alignment : public BamAlignment
 
         Alignment(void);
         Alignment(BamAlignment& other);
+
         int position(void) const;
         void position(int);
 
@@ -39,5 +37,4 @@ int sumCigar(vector<CigarOp>& cigar);
 
 int pairedGapLength(Alignment& a, Alignment& b);
 
-}
 #endif

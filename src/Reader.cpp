@@ -10,7 +10,7 @@ using std::istream;
 using std::vector;
 using std::string;
 
-bool GFF::Reader::getNextFeature(istream& input, Feature& f)
+bool GFFReader::getNextFeature(istream& input, Feature& f)
 {
     string temp;
     Feature a;
@@ -26,10 +26,10 @@ bool GFF::Reader::getNextFeature(istream& input, Feature& f)
     return false;
 }
 
-void GFF::Reader::readAllAndLinkChildren(istream& input, vector<Feature>& features)
+void GFFReader::readAllAndLinkChildren(istream& input, vector<Feature>& features)
 {
     Feature f;
-    ParentChildIndex index;
+    ChildrenIndex index;
 
     while (getNextFeature(input, f))
     {

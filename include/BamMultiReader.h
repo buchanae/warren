@@ -1,11 +1,9 @@
-#ifndef ALIGNMENTUTILS_BAMMULTIREADER_H
-#define ALIGNMENTUTILS_BAMMULTIREADER_H
+#ifndef WARREN_BAMMULTIREADER_H
+#define WARREN_BAMMULTIREADER_H
 
 #include "bamtools/api/BamMultiReader.h"
 
 #include "Alignment.h"
-
-namespace AlignmentUtils {
 
 class BamMultiReader : public BamTools::BamMultiReader
 {
@@ -19,5 +17,4 @@ class BamMultiReader : public BamTools::BamMultiReader
         }
 };
 
-}
 #endif
