@@ -10,8 +10,8 @@
 #include <boost/assign/list_of.hpp>
 #include <boost/algorithm/string.cpp>
 
-#include "Attributes.h"
-#include "tokenizer.h"
+#include "warren/Attributes.h"
+#include "warren/tokenizer.h"
 
 using std::string;
 using std::vector;

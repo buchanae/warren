@@ -7,8 +7,8 @@
 
 #include "api/BamAux.h"
 
-#include "Alignment.h"
-#include "Coverage.h"
+#include "warren/Alignment.h"
+#include "warren/Coverage.h"
 
 using GFF::Feature;
 using std::endl;

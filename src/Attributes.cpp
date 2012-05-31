@@ -6,8 +6,8 @@
 
 #include "uriparser/Uri.h"
 
-#include "Attributes.h"
-#include "tokenizer.h"
+#include "warren/Attributes.h"
+#include "warren/tokenizer.h"
 
 using std::string;
 using std::vector;

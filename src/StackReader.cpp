@@ -5,9 +5,9 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/lexical_cast.hpp>
 
-#include "Feature.h"
-#include "StackReader.h"
-#include "tokenizer.h"
+#include "warren/Feature.h"
+#include "warren/StackReader.h"
+#include "warren/tokenizer.h"
 
 using std::string;
 

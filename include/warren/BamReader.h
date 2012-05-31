@@ -3,9 +3,7 @@
 
 #include "bamtools/api/BamReader.h"
 
-#include "Alignment.h"
-
-namespace AlignmentUtils {
+#include "warren/Alignment.h"
 
 class BamReader : public BamTools::BamReader
 {
@@ -19,5 +17,4 @@ class BamReader : public BamTools::BamReader
         }
 };
 
-}
 #endif

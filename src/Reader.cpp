@@ -2,9 +2,9 @@
 #include <string>
 #include <vector>
 
-#include "Feature.h"
-#include "Index.h"
-#include "Reader.h"
+#include "warren/Feature.h"
+#include "warren/Index.h"
+#include "warren/Reader.h"
 
 using std::istream;
 using std::vector;

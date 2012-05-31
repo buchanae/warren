@@ -3,7 +3,7 @@
 
 #include "bamtools/api/BamMultiReader.h"
 
-#include "Alignment.h"
+#include "warren/Alignment.h"
 
 class BamMultiReader : public BamTools::BamMultiReader
 {

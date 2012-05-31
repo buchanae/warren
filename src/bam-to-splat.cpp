@@ -3,10 +3,10 @@
 
 #include <tclap/CmdLine.h>
 
-#include "AlignmentUtils/Alignment.h"
-#include "AlignmentUtils/BamMultiReader.h"
-#include "AlignmentUtils/BamPool.h"
-#include "AlignmentUtils/Splat.h"
+#include "warren/Alignment.h"
+#include "warren/BamMultiReader.h"
+#include "warren/BamPool.h"
+#include "warren/Splat.h"
 
 #define VERSION "0.1"
 

@@ -5,12 +5,9 @@
 
 #include <tclap/CmdLine.h>
 
-#include "Feature.h"
-#include "Reader.h"
-
-#include "Coverage.h"
-#include "JunctionIndex.h"
-#include "helpers.h"
+#include "warren/Coverage.h"
+#include "warren/Feature.h"
+#include "warren/Reader.h"
 
 #define VERSION "0.1"
 

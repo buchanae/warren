@@ -11,10 +11,8 @@
 
 #include "tclap/CmdLine.h"
 
-#include "AlignmentUtils/Alignment.h"
-#include "AlignmentUtils/BamMultiReader.h"
-
-#include "types.h"
+#include "warren/Alignment.h"
+#include "warren/BamMultiReader.h"
 
 #define VERSION "0.1"
 

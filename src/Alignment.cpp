@@ -2,10 +2,7 @@
 
 #include "bamtools/api/BamAux.h"
 
-#include "Alignment.h"
-
-namespace AlignmentUtils
-{
+#include "warren/Alignment.h"
 
 Alignment::Alignment(void) : BamTools::BamAlignment() {}
 Alignment::Alignment(BamTools::BamAlignment& other) : BamTools::BamAlignment(other) {}
@@ -78,6 +75,4 @@ int sumCigar(vector<CigarOp>& cigar)
 int pairedGapLength(Alignment& a, Alignment& b)
 {
     return b.position() - a.position() + sumCigar(a.CigarData) - 2;
-}
-
 }

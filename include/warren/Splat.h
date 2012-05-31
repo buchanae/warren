@@ -7,7 +7,7 @@
 
 #include <boost/algorithm/string/join.hpp>
 
-#include "Alignment.h"
+#include "warren/Alignment.h"
 
 using std::string;
 using std::stringstream;

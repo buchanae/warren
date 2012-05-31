@@ -2,8 +2,8 @@
 #include <string>
 #include <vector>
 
-#include "Feature.h"
-#include "Index.h"
+#include "warren/Feature.h"
+#include "warren/Index.h"
 
 using std::string;
 using std::vector;

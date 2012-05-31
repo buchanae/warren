@@ -9,8 +9,8 @@
 #include "bamtools/api/BamAux.h"
 #include "bamtools/api/BamWriter.h"
 
-#include "Alignment.h"
-#include "BamReader.h"
+#include "warren/Alignment.h"
+#include "warren/BamReader.h"
 
 #define DEFAULT_MAX_SIZE 10000000
 #define DEFAULT_TMP_DIR "/tmp"

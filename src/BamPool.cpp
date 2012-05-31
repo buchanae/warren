@@ -5,10 +5,9 @@
 #include "bamtools/api/BamAux.h"
 #include "bamtools/api/BamWriter.h"
 
-#include "Alignment.h"
-#include "BamMultiReader.h"
-
-#include "BamPool.h"
+#include "warren/Alignment.h"
+#include "warren/BamMultiReader.h"
+#include "warren/BamPool.h"
 
 using std::vector;
 using std::string;

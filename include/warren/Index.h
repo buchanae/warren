@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include "Feature.h"
+#include "warren/Feature.h"
 
 using std::map;
 using std::multimap;

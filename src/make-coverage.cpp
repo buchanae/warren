@@ -5,14 +5,11 @@
 
 #include <tclap/CmdLine.h>
 
-#include "Index.h"
-#include "Feature.h"
-
-#include "Alignment.h"
-#include "BamReader.h"
-#include "Coverage.h"
-#include "JunctionFilter.h"
-#include "helpers.h"
+#include "warren/Alignment.h"
+#include "warren/BamReader.h"
+#include "warren/Coverage.h"
+#include "warren/Feature.h"
+#include "warren/Index.h"
 
 #define VERSION "0.1"
 

@@ -6,9 +6,9 @@
 #include <vector>
 
 #include "api/BamAux.h"
-#include "Feature.h"
 
-#include "Alignment.h"
+#include "warren/Feature.h"
+#include "warren/Alignment.h"
 
 using GFF::Feature;
 using std::vector;
