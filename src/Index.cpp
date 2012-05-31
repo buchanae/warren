@@ -36,22 +36,34 @@ void ChildrenIndex::add (Feature& feature)
     }
 }
 
-void ChildrenIndex::childrenOf (Feature& feature, vector<Feature>& children)
+void ChildrenIndex::childrenOf (Feature& query, vector<Feature>& children)
 {
     string ID;
-    if (feature.attributes.get("ID", ID))
+    if (query.attributes.get("ID", ID))
     {
-        std::pair<
-            std::multimap<string, Feature>::iterator,
-            std::multimap<string, Feature>::iterator
-        > range = by_parent_ID.equal_range(ID);
-
-        std::multimap<string, Feature>::iterator rit = range.first;
-        for (; rit != range.second; ++rit)
-        {
-            children.push_back(rit->second);
-        }
+        childrenOf(ID, children);
     }
+}
+
+void ChildrenIndex::childrenOf (string& ID, vector<Feature>& children)
+{
+    parent_IDs.insert(ID);
+
+    std::pair<
+        std::multimap<string, Feature>::iterator,
+        std::multimap<string, Feature>::iterator
+    > range = by_parent_ID.equal_range(ID);
+
+    std::multimap<string, Feature>::iterator rit = range.first;
+    for (; rit != range.second; ++rit)
+    {
+        children.push_back(rit->second);
+    }
+}
+
+void ChildrenIndex::parentIDs (vector<string>& IDs)
+{
+    IDs.insert(IDs.end(), parent_IDs.begin(), parent_IDs.end());
 }
 
 // TODO fix GFF lib to make this const Feature& f

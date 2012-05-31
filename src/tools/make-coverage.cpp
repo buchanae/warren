@@ -10,11 +10,12 @@
 #include "warren/Coverage.h"
 #include "warren/Feature.h"
 #include "warren/Index.h"
+#include "warren/GFFReader.h"
+#include "warren/junctions.h"
+#include "warren/StackReader.h"
 
 #define VERSION "0.1"
 
-using GFF::Feature;
-using GFF::TypeIndex;
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -85,14 +86,45 @@ int main (int argc, char* argv[])
         return 0;
     }
 
-    UniquePositionIndex junctions;
-
     cerr << "Loading splice junctions from reference GFF." << endl;
 
-    indexJunctionsFromGFF(gff_stream, junctions);
+    UniquePositionIndex junctions;
+    ChildrenIndex exon_index;
+    GFFReader gff_reader;
+    Feature f;
+
+    while (gff_reader.getNextFeature(gff_stream, f))
+    {
+        if (f.isExonType())
+        {
+            exon_index.add(f);
+        }
+    }
+
+    vector<string> IDs;
+    exon_index.parentIDs(IDs);
+
+    for (vector<string>::iterator ID = IDs.begin(); ID != IDs.end(); ++ID)
+    {
+        vector<Feature> exons;
+        vector<Feature> juncs;
+        exon_index.childrenOf(*ID, exons);
+
+        getJunctions(exons, juncs);
+        // TODO it's wasteful to have a juncs vector that just gets moved to the index
+        //      it'd be nicer if the index implemented the same interface as the vector
+        //      this means giving indexes iterators?
+        //      c++ you're so complicated...
+
+        for (vector<Feature>::iterator junc = juncs.begin(); junc != juncs.end(); ++junc)
+        {
+            junctions.add(*junc);
+        }
+    }
 
     cerr << "Loading splice junctions from stack files." << endl;
 
+    StackReader stack_reader;
     // load splice junctions from stack files
     for (vector<string>::iterator it = stack_file_paths.begin();
          it != stack_file_paths.end(); ++it)
@@ -105,7 +137,11 @@ int main (int argc, char* argv[])
         }
         else
         {
-            indexJunctionsFromStack(stack_stream, junctions);
+            Feature j;
+            while (stack_reader.getNextFeature(stack_stream, j))
+            {
+                junctions.add(j);
+            }
         }
     }
 
@@ -139,12 +175,7 @@ int main (int argc, char* argv[])
 
     cerr << "Writing coverage file." << endl;
 
-    formatGMBCoverage(coverage, *output_stream);
-
-    if (output_file_stream.is_open())
-    {
-        output_file_stream.close();
-    }
+    coverage.toOutputStream(*output_stream);
 
     return 0;
 }

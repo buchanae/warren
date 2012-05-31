@@ -103,16 +103,16 @@ struct Feature
         return end - start + 1;
     }
 
-    bool isTranscriptType(Feature& f)
+    bool isTranscriptType()
     {
-        string s(f.type);
+        string s(type);
         to_lower(s);
         return transcript_types.find(s) != transcript_types.end();
     }
 
-    bool isExonType(Feature& f)
+    bool isExonType()
     {
-        string s(f.type);
+        string s(type);
         to_lower(s);
         return exon_types.find(s) != exon_types.end();
     }

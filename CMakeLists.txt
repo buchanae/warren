@@ -16,6 +16,7 @@ set(
   src/Index.cpp
   src/GFFReader.cpp
   src/StackReader.cpp
+  src/junctions.cpp
 )
 
 #
@@ -38,8 +39,8 @@ set(
 add_library( warren ${SRCS} )
 target_link_libraries( warren ${LIBS} )
 
-#add_executable( iso_signal ${SRCS} src/main.cpp)
-#target_link_libraries( iso_signal ${LIBS} )
+add_executable( make-coverage src/tools/make-coverage.cpp)
+target_link_libraries( make-coverage warren ${LIBS} )
 
 #add_executable( intron_length_stats ${SRCS} src/intron_length_stats.cpp)
 #target_link_libraries( intron_length_stats ${LIBS} )
