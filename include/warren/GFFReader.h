@@ -11,8 +11,9 @@ using std::vector;
 
 class GFFReader
 {
-    bool getNextFeature (istream& input, Feature& feature);
-    void readAllAndLinkChildren (istream& input, vector<Feature>& features);
+    public:
+        bool getNextFeature (istream& input, Feature& feature);
+        void readAllAndLinkChildren (istream& input, vector<Feature>& features);
 };
 
 #endif

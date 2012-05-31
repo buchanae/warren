@@ -3,22 +3,12 @@
 #include "bamtools/api/BamAux.h"
 
 #include "warren/Alignment.h"
+#include "warren/Feature.h"
 
 Alignment::Alignment(void) : BamTools::BamAlignment() {}
 Alignment::Alignment(BamTools::BamAlignment& other) : BamTools::BamAlignment(other) {}
 
-int Alignment::position(void) const
-{
-    return Position + 1;
-}
-
-void Alignment::position(int pos)
-{
-    Position = pos - 1;
-}
-
-/*
-bool Alignment::getJunction(GFF::Feature& junction)
+bool Alignment::getJunction (Feature& junction)
 {
     // this all assumes there is only one gap, i.e. only one 'N' CigarOp
 
@@ -45,9 +35,8 @@ bool Alignment::getJunction(GFF::Feature& junction)
 
     return true;
 }
-*/
 
-string toString(const vector<CigarOp>& cd)
+string toString (const vector<CigarOp>& cd)
 {
     stringstream ss;
     string out = "";
@@ -60,7 +49,7 @@ string toString(const vector<CigarOp>& cd)
     return out;
 }
 
-int sumCigar(vector<CigarOp>& cigar)
+int sumCigar (vector<CigarOp>& cigar)
 {
     int length = 0;
     for (unsigned int i = 0; i < cigar.size(); i++)
@@ -72,7 +61,7 @@ int sumCigar(vector<CigarOp>& cigar)
 
 // Calculate paired-end gapped alignments using the CigarOp data
 // NOT the length of the query sequence
-int pairedGapLength(Alignment& a, Alignment& b)
+int pairedGapLength (Alignment& a, Alignment& b)
 {
     return b.position() - a.position() + sumCigar(a.CigarData) - 2;
 }

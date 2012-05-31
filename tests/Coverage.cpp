@@ -5,10 +5,9 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Alignment.h"
-#include "Coverage.h"
+#include "warren/Alignment.h"
+#include "warren/Coverage.h"
 
-using GFF::Feature;
 using testing::DoubleEq;
 using testing::ElementsAre;
 
@@ -96,18 +95,18 @@ TEST(CoverageTest, Coverage_add_alignment)
     EXPECT_THAT(c.coverages.find("foo")->second, ElementsAre(0, 0, 1, 1, 0, 0, 0, 1, 1));
 }
 
-TEST(HelpersTest, loadCoverage)
+TEST(CoverageTest, load)
 {
     Coverage c;
 
     std::stringstream coverage_str("bar\t6\n1\n1\n1\n0\n0\n0\nfoo\t5\n0\n0\n1\n1\n0\n");
-    loadCoverage(coverage_str, c);
+    c.load(coverage_str);
 
     EXPECT_THAT(c.coverages.find("bar")->second, ElementsAre(1, 1, 1, 0, 0, 0));
     EXPECT_THAT(c.coverages.find("foo")->second, ElementsAre(0, 0, 1, 1, 0));
 }
 
-TEST(HelpersTest, formatGMBCoverage)
+TEST(CoverageTest, toString)
 {
     // Note that references are output in sorted order on reference name
 
@@ -120,12 +119,12 @@ TEST(HelpersTest, formatGMBCoverage)
     std::string expected = "bar\t6\n1\n1\n1\n0\n0\n0\nfoo\t5\n0\n0\n1\n1\n0\n";
 
     std::stringstream out;
-    formatGMBCoverage(c, out);
+    c.toOutputStream(out);
 
     EXPECT_EQ(expected, out.str());
 
     std::string out_string;
-    formatGMBCoverage(c, out_string);
+    c.toString(out_string);
 
     EXPECT_EQ(expected, out_string);
 }

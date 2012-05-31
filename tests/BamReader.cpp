@@ -1,10 +1,9 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Alignment.h"
-#include "BamReader.h"
+#include "warren/Alignment.h"
+#include "warren/BamReader.h"
 
-using GFF::Feature;
 using testing::ElementsAre;
 using testing::WhenSorted;
 

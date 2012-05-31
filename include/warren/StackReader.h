@@ -7,7 +7,8 @@
 
 class StackReader
 {
-    bool getNextFeature(std::istream&, Feature&);
+    public:
+        bool getNextFeature(std::istream&, Feature&);
 };
 
 #endif

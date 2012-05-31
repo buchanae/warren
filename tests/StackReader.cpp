@@ -5,10 +5,9 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Feature.h"
-#include "StackReader.h"
+#include "warren/Feature.h"
+#include "warren/StackReader.h"
 
-using GFF::Feature;
 using std::string;
 
 TEST(StackReaderTest, getNextFeature)
@@ -20,18 +19,19 @@ TEST(StackReaderTest, getNextFeature)
     data << "@Chr2\tAT-CG\t30\t40\t11" << std::endl;
 
     Feature f;
+    StackReader reader;
 
-    EXPECT_TRUE(StackReader::getNextFeature(data, f));
+    EXPECT_TRUE(reader.getNextFeature(data, f));
     EXPECT_EQ("Chr", f.seqid);
     EXPECT_EQ("splice_junction", f.type);
     EXPECT_EQ(10, f.start);
     EXPECT_EQ(20, f.end);
 
-    EXPECT_TRUE(StackReader::getNextFeature(data, f));
+    EXPECT_TRUE(reader.getNextFeature(data, f));
     EXPECT_EQ("Chr2", f.seqid);
     EXPECT_EQ("splice_junction", f.type);
     EXPECT_EQ(30, f.start);
     EXPECT_EQ(40, f.end);
 
-    EXPECT_FALSE(StackReader::getNextFeature(data, f));
+    EXPECT_FALSE(reader.getNextFeature(data, f));
 }

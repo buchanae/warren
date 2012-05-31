@@ -6,6 +6,8 @@
 
 #include "bamtools/api/BamAlignment.h"
 
+#include "warren/Feature.h"
+
 using std::string;
 using std::stringstream;
 using std::vector;
@@ -21,8 +23,17 @@ class Alignment : public BamAlignment
         Alignment(void);
         Alignment(BamAlignment& other);
 
-        int position(void) const;
-        void position(int);
+        int position (void) const
+        {
+            return Position + 1;
+        }
+
+        void position (int p)
+        {
+            Position = p - 1;
+        }
+
+        bool getJunction (Feature& junction);
 
     private:
         // Prevent public access to Position, because it's zero-based,

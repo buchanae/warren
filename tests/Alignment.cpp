@@ -1,16 +1,14 @@
 #include <vector>
 
-#include "api/BamAlignment.h"
-#include "api/BamAux.h"
+#include "bamtools/api/BamAlignment.h"
+#include "bamtools/api/BamAux.h"
 
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Feature.h"
+#include "warren/Alignment.h"
+#include "warren/Feature.h"
 
-#include "Alignment.h"
-
-using GFF::Feature;
 using testing::ElementsAre;
 using testing::WhenSorted;
 

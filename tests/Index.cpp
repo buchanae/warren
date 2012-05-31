@@ -3,10 +3,9 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Feature.h"
-#include "Index.h"
+#include "warren/Feature.h"
+#include "warren/Index.h"
 
-using namespace GFF;
 using testing::ElementsAre;
 using testing::WhenSorted;
 
@@ -54,7 +53,7 @@ TEST(TypeIndexTest, filter_type)
     EXPECT_THAT(seqids, WhenSorted(ElementsAre("two")));
 }
 
-TEST(ParentChildIndexTest, children)
+TEST(ChildrenIndexTest, children)
 {
     typedef vector<Feature>::iterator Feature_iter;
 
@@ -66,7 +65,7 @@ TEST(ParentChildIndexTest, children)
     b.attributes.addFromGFF("ID=two;Parent=one");
     c.attributes.addFromGFF("ID=three;Parent=one");
 
-    ParentChildIndex index;
+    ChildrenIndex index;
     index.add(a);
     index.add(b);
     index.add(c);

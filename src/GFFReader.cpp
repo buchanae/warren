@@ -4,7 +4,7 @@
 
 #include "warren/Feature.h"
 #include "warren/Index.h"
-#include "warren/Reader.h"
+#include "warren/GFFReader.h"
 
 using std::istream;
 using std::vector;

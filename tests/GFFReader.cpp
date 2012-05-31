@@ -6,17 +6,17 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Feature.h"
-#include "Reader.h"
+#include "warren/Feature.h"
+#include "warren/GFFReader.h"
 
-using namespace GFF;
 using std::vector;
 using std::string;
+
 using testing::ElementsAre;
 using testing::WhenSorted;
 // TODO skip GFF comments
 
-TEST(ReaderTest, getNextFeature)
+TEST(GFFReaderTest, getNextFeature)
 {
     std::stringstream data;
     data << "Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo" << std::endl;
@@ -24,14 +24,15 @@ TEST(ReaderTest, getNextFeature)
 
     Feature f;
 
-    Reader::getNextFeature(data, f);
+    GFFReader reader;
+    reader.getNextFeature(data, f);
     EXPECT_EQ("Chr", f.seqid);
 
-    Reader::getNextFeature(data, f);
+    reader.getNextFeature(data, f);
     EXPECT_EQ("Chr2", f.seqid);
 }
 
-TEST(ReaderTest, readAllAndLinkChildren)
+TEST(GFFReaderTest, readAllAndLinkChildren)
 {
     typedef vector<Feature>::iterator Feature_iter;
 
@@ -41,7 +42,8 @@ TEST(ReaderTest, readAllAndLinkChildren)
     data << "Chr\t.\tgene\t20\t30\t0\t+\t0\tID=three;Parent=one;" << std::endl;
 
     vector<Feature> ret;
-    Reader::readAllAndLinkChildren(data, ret);
+    GFFReader reader;
+    reader.readAllAndLinkChildren(data, ret);
 
     EXPECT_EQ(3, ret.size());
 

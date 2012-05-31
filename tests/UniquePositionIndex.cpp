@@ -3,19 +3,17 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Feature.h"
+#include "warren/Feature.h"
+#include "warren/Index.h"
 
-#include "JunctionIndex.h"
-
-using GFF::Feature;
 using testing::ElementsAre;
 using testing::WhenSorted;
 
-TEST(JunctionIndexTest, overlappingFeature)
+TEST(UniquePositionIndexTest, overlappingFeature)
 {
-    JunctionIndex index;
+    UniquePositionIndex index;
 
-    // a and b are valid junctions and will be returned from the query
+    // a and b are valid features and will be returned from the query
     Feature a;
     a.seqid = "one";
     a.source = "A";
@@ -30,9 +28,9 @@ TEST(JunctionIndexTest, overlappingFeature)
     b.source = "B";
     index.add(b);
 
-    // The query range will fall in the middle of this junction,
+    // The query range will fall in the middle of this feature,
     // so it won't be returned.
-    // i.e. valid junctions must fall entirely within the query range
+    // i.e. valid features must fall entirely within the query range
     Feature c;
     c.seqid = "one";
     c.source = "C";
@@ -41,7 +39,7 @@ TEST(JunctionIndexTest, overlappingFeature)
     index.add(c);
 
     // duplicate of Feature a.
-    // JunctionIndex only returns unique junctions,
+    // UniquePositionIndex only returns unique features,
     // so this won't be returned as a duplicate
     Feature d;
     d.seqid = "one";
@@ -74,11 +72,11 @@ TEST(JunctionIndexTest, overlappingFeature)
     EXPECT_THAT(sources, WhenSorted(ElementsAre("A", "B")));
 }
 
-TEST(JunctionIndexTest, unique)
+TEST(UniquePositionIndexTest, all)
 {
-    // JunctionIndex::unique() allows getting all unique junctions in this index
+    // UniquePositionIndex::all() allows getting all unique features in this index
     Feature f;
-    JunctionIndex index;
+    UniquePositionIndex index;
 
     f.seqid = "Chr1";
     f.source = "A";
@@ -100,7 +98,7 @@ TEST(JunctionIndexTest, unique)
 
     std::vector<std::string> sources;
     std::vector<Feature> ret;
-    index.unique(ret);
+    index.all(ret);
 
     for (std::vector<Feature>::iterator it = ret.begin(); it != ret.end(); ++it)
     {
@@ -109,5 +107,5 @@ TEST(JunctionIndexTest, unique)
     EXPECT_THAT(sources, WhenSorted(ElementsAre("A", "C", "D")));
 
     // test count()
-    EXPECT_EQ(3, index.uniqueCount());
+    EXPECT_EQ(3, index.count());
 }

@@ -4,9 +4,7 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
-#include "Attributes.h"
-
-using namespace GFF;
+#include "warren/Attributes.h"
 
 using testing::ElementsAre;
 using std::string;
