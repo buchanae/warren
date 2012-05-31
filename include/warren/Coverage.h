@@ -5,12 +5,10 @@
 #include <string>
 #include <vector>
 
-#include "api/BamAux.h"
+#include "bamtools/api/BamAux.h"
 
-#include "warren/Feature.h"
 #include "warren/Alignment.h"
 
-using GFF::Feature;
 using std::vector;
 using std::string;
 

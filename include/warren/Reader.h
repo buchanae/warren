@@ -1,15 +1,18 @@
 #ifndef WARREN_GFFREADER_H
 #define WARREN_GFFREADER_H
 
-#include <iostream>
+#include <istream>
 #include <vector>
 
 #include "warren/Feature.h"
 
+using std::istream;
+using std::vector;
+
 class GFFReader
 {
-    bool getNextFeature(std::istream& input, Feature& feature);
-    void readAllAndLinkChildren(std::istream& input, std::vector<Feature>& features);
-}
+    bool getNextFeature (istream& input, Feature& feature);
+    void readAllAndLinkChildren (istream& input, vector<Feature>& features);
+};
 
 #endif

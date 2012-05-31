@@ -1,16 +1,15 @@
 #include <cstdlib>
 #include <iostream>
-#include <sstream>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
-#include "api/BamAux.h"
+#include "bamtools/api/BamAux.h"
 
 #include "warren/Alignment.h"
 #include "warren/Coverage.h"
 
-using GFF::Feature;
 using std::endl;
 using std::vector;
 using std::string;
@@ -35,7 +34,7 @@ void Coverage::setMinReferenceLength (string ref_name, int length)
     coverages_t::iterator coverage = coverages.find(ref_name);
     if (coverage == coverages.end())
     {
-        coverages.insert(make_pair(name, vector<int>(length, 0)));
+        coverages.insert(make_pair(ref_name, vector<int>(length, 0)));
     }
     else if (coverage->second.size() < length)
     {
@@ -91,7 +90,7 @@ void Coverage::load (std::istream& input)
     }
 }
 
-void toOutputStream (std::ostream& output)
+void Coverage::toOutputStream (std::ostream& output)
 {
     for (coverages_t::iterator it = coverages.begin(); it != coverages.end(); ++it)
     {
@@ -103,9 +102,9 @@ void toOutputStream (std::ostream& output)
     }
 }
 
-void toString (string& output)
+void Coverage::toString (string& output)
 {
     std::stringstream stream;
-    toOutputStream(coverage, stream);
+    toOutputStream(stream);
     output = stream.str();
 }

@@ -1,39 +1,34 @@
+project( warren )
+option( build_tests "Build tests" OFF )
+
 cmake_minimum_required( VERSION 2.6 )
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-project( iso_signal )
-
-find_package( bamtools REQUIRED )
-include_directories( ${bamtools_INCLUDE_DIR} )
-
-message(STATUS ${bamtools_LIBRARY})
-
-find_package( duncan REQUIRED )
-include_directories( ${duncan_INCLUDE_DIR} )
 
 include_directories( include )
 set( 
-    SRCS
-    src/JunctionIndex.cpp
-    src/StackReader.cpp
-    src/Alignment.cpp
-    src/Coverage.cpp
-    src/helpers.cpp
+  SRCS
+  src/Alignment.cpp
+  src/Attributes.cpp
+  src/Coverage.cpp
+  src/Index.cpp
+  src/Reader.cpp
+  src/StackReader.cpp
 )
 set(
-    LIBS
-    ${duncan_LIBRARY}
-    ${bamtools_LIBRARY}
+  LIBS
+  bamtools
 )
+add_library( warren ${SRCS} )
+target_link_libraries( warren ${LIBS} )
+
 #add_executable( iso_signal ${SRCS} src/main.cpp)
 #target_link_libraries( iso_signal ${LIBS} )
 
 #add_executable( intron_length_stats ${SRCS} src/intron_length_stats.cpp)
 #target_link_libraries( intron_length_stats ${LIBS} )
 
-add_executable( feature_coverage ${SRCS} src/feature_coverage.cpp)
-target_link_libraries( feature_coverage ${LIBS} )
+#add_executable( feature_coverage ${SRCS} src/feature_coverage.cpp)
+#target_link_libraries( feature_coverage ${LIBS} )
 
-option( build_tests "Build tests" ON )
 if( build_tests )
 
     enable_testing()

@@ -77,7 +77,7 @@ void UniquePositionIndex::overlappingFeature (Feature& query, vector<Feature>& o
     iter end = features.upper_bound(upper);
     for (; it != end; ++it)
     {
-        if ((*it).end < target.end) overlaps.push_back(*it);
+        if ((*it).end < query.end) overlaps.push_back(*it);
     }
 }
 

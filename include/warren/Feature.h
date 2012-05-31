@@ -8,7 +8,7 @@
 #include <vector>
 
 #include <boost/assign/list_of.hpp>
-#include <boost/algorithm/string.cpp>
+#include <boost/algorithm/string.hpp>
 
 #include "warren/Attributes.h"
 #include "warren/tokenizer.h"
@@ -16,7 +16,7 @@
 using std::string;
 using std::vector;
 
-using boost::algorithm::list_of;
+using boost::assign::list_of;
 using boost::algorithm::to_lower;
 
 struct Feature
@@ -36,13 +36,21 @@ struct Feature
         phase = '.';
         raw_attributes = ".";
 
-        transcript_types = list_of("mrna", "mrna_te_gene", "ncrna", "mirna", "snorna",
-                                   "snrna", "rrna", "trna", "pseudogenic_transcript");
+        transcript_types = list_of("mrna")
+                                  ("mrna_te_gene")
+                                  ("ncrna")
+                                  ("mirna")
+                                  ("snorna")
+                                  ("snrna")
+                                  ("rrna")
+                                  ("trna")
+                                  ("pseudogenic_transcript");
 
-        exon_types = list_of("exon", "pseudogenic_exon");
+        exon_types = list_of("exon")
+                            ("pseudogenic_exon");
     }
 
-    bool initFromGFF(string&);
+    bool initFromGFF(string& raw)
     {
         // split the tab-delimited columns
         std::vector<string> cols;
@@ -97,12 +105,16 @@ struct Feature
 
     bool isTranscriptType(Feature& f)
     {
-        return transcript_types.find(to_lower(f.type)) != transcript_types.end();
+        string s(f.type);
+        to_lower(s);
+        return transcript_types.find(s) != transcript_types.end();
     }
 
     bool isExonType(Feature& f)
     {
-        return exon_types.find(to_lower(f.type)) != exon_types.end();
+        string s(f.type);
+        to_lower(s);
+        return exon_types.find(s) != exon_types.end();
     }
 };
 
