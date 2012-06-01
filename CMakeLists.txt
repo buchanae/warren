@@ -42,8 +42,8 @@ target_link_libraries( warren ${LIBS} )
 add_executable( make-coverage src/tools/make-coverage.cpp)
 target_link_libraries( make-coverage warren ${LIBS} )
 
-#add_executable( intron_length_stats ${SRCS} src/intron_length_stats.cpp)
-#target_link_libraries( intron_length_stats ${LIBS} )
+add_executable( intron-length-stats src/tools/intron-length-stats.cpp)
+target_link_libraries( intron-length-stats warren ${LIBS} )
 
 #add_executable( feature_coverage ${SRCS} src/feature_coverage.cpp)
 #target_link_libraries( feature_coverage ${LIBS} )

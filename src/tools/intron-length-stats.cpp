@@ -7,11 +7,12 @@
 
 #include "warren/Coverage.h"
 #include "warren/Feature.h"
-#include "warren/Reader.h"
+#include "warren/Index.h"
+#include "warren/GFFReader.h"
+#include "warren/junctions.h"
 
 #define VERSION "0.1"
 
-using GFF::Feature;
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -70,42 +71,25 @@ int main (int argc, char* argv[])
         return 0;
     }
 
-    JunctionIndex junctions;
+    cerr << "Loading splice junctions from reference GFF." << endl;
 
-    cerr << "Loading stack files." << endl;
-
-    // load splice junctions from stack files
-    for (vector<string>::iterator it = stack_file_paths.begin();
-         it != stack_file_paths.end(); ++it)
-    {
-        std::ifstream stack_stream(it->c_str());
-        if (!stack_stream.is_open())
-        {
-            cerr << "Error opening stack file: " << *it << endl;
-            cerr << "Skipping file." << endl;
-        }
-        else
-        {
-            indexJunctionsFromStack(stack_stream, junctions);
-        }
-    }
-
-    cerr << "Loading the reference GFF." << endl;
-
-    vector<Feature> transcripts;
-    GFF::ParentChildIndex exons_index;
-
+    std::map<string, int> transcript_lengths;
+    ChildrenIndex exon_index;
+    GFFReader gff_reader;
     Feature f;
-    while (GFF::Reader::getNextFeature(gff_stream, f))
+
+    while (gff_reader.getNextFeature(gff_stream, f))
     {
-        if (isTranscriptType(f))
+        if (f.isTranscriptType())
         {
-            transcripts.push_back(f);
+            string ID;
+            f.attributes.get("ID", ID);
+            transcript_lengths.insert(std::make_pair(ID, f.getLength()));
         }
 
-        if (isExonType(f))
+        if (f.isExonType())
         {
-            exons_index.add(f);
+            exon_index.add(f);
         }
     }
 
@@ -113,25 +97,34 @@ int main (int argc, char* argv[])
 
     vector<int> percent_counts(101, 0);
 
-    for (vector<Feature>::iterator transcript = transcripts.begin(); 
-         transcript != transcripts.end(); ++transcript)
-    {
-        vector<Feature> junctions;
-        vector<Feature> exons;
-        exons_index.childrenOf(*transcript, exons);
-        spliceJunctions(exons, junctions);
+    vector<string> IDs;
+    exon_index.parentIDs(IDs);
 
-        if (junctions.size() > 0)
+    for (vector<string>::iterator ID = IDs.begin(); ID != IDs.end(); ++ID)
+    {
+        vector<Feature> exons;
+        vector<Feature> juncs;
+        exon_index.childrenOf(*ID, exons);
+
+        getJunctions(exons, juncs);
+        // TODO it's wasteful to have a juncs vector that just gets moved to the index
+        //      it'd be nicer if the index implemented the same interface as the vector
+        //      this means giving indexes iterators?
+        //      c++ you're so complicated...
+
+        if (juncs.size() > 0)
         {
             double total = 0;
+            std::map<string, int>::iterator it = transcript_lengths.find(*ID);
+            int transcript_length = it->second;
 
-            for (vector<Feature>::iterator junction = junctions.begin();
-                 junction != junctions.end(); ++junction)
+            for (vector<Feature>::iterator junction = juncs.begin();
+                 junction != juncs.end(); ++junction)
             {
-                total += ((double) junction->getLength()) / transcript->getLength();
+                total += ((double) junction->getLength()) / transcript_length;
             }
 
-            int avg_percent = (int)((total / junctions.size()) * 100);
+            int avg_percent = (int)((total / juncs.size()) * 100);
 
             percent_counts.at(avg_percent) += 1;
         }
@@ -139,12 +132,7 @@ int main (int argc, char* argv[])
 
     for (int i = 0; i < percent_counts.size(); ++i) 
     {
-        output_stream << i << "\t" << percent_counts.at(i) << endl;
-    }
-
-    if (output_file_stream.is_open())
-    {
-        output_file_stream.close();
+        *output_stream << i << "\t" << percent_counts.at(i) << endl;
     }
 
     return 0;
