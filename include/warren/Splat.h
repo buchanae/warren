@@ -47,7 +47,7 @@ struct Splat
         position.ref = al.RefName;
         al.GetTag("XD", flanks);
 
-        position.a_start = al.positionition();
+        position.a_start = al.position();
         position.a_end = position.a_start + al.CigarData.at(0).Length - 1;
         position.b_start = position.a_end + al.CigarData.at(1).Length + 1;
         position.b_end = position.b_start + al.CigarData.at(2).Length - 1;

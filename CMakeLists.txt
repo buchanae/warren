@@ -48,6 +48,9 @@ target_link_libraries( intron-length-stats warren ${LIBS} )
 add_executable( feature-coverage src/tools/feature-coverage.cpp)
 target_link_libraries( feature-coverage warren ${LIBS} )
 
+add_executable( bam-to-splat src/tools/bam-to-splat.cpp )
+target_link_libraries( bam-to-splat warren ${LIBS} )
+
 #
 # Build unit tests if 'build_tests' option is on
 #

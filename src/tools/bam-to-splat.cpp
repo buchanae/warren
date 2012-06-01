@@ -14,21 +14,14 @@ using std::endl;
 using std::cerr;
 using std::cout;
 
-using AlignmentUtils::Alignment;
-using AlignmentUtils::BamMultiReader;
-using AlignmentUtils::BamPool;
-using AlignmentUtils::BamPoolReader;
-using AlignmentUtils::Splat;
-
 struct CompareSplats
 {
     bool operator() (const Alignment& a, const Alignment& b) const
     {
         return (a.RefName < b.RefName)
-               || (a.RefName == b.RefName && a.position() < b.position())
-               || (a.RefName == b.RefName && a.position() < b.position()
-                   && (AlignmentUtils::toString(a.CigarData) 
-                       < AlignmentUtils::toString(b.CigarData)));
+            || (a.RefName == b.RefName && a.position() < b.position())
+            || (a.RefName == b.RefName && a.position() < b.position()
+                && (toString(a.CigarData) < toString(b.CigarData)));
     }
 };
 
@@ -89,24 +82,25 @@ int main (int argc, char * argv[])
     }
 
     BamPoolReader<CompareSplats> pool_reader = pool.getReader();
-    Splat prev;
+    Splat* prev;
 
     while (pool_reader.GetNextAlignment(alignment))
     {
-        Splat splat = toSplat(alignment);
+        Splat splat(alignment);
 
-        if (prev.ref.empty()) prev = splat;
+        if (prev == NULL) prev = &splat;
         else
         {
-            if (splat.position == prev.position) splat.merge( prev );
-            else *output_stream << prev.str() << endl;
+            if (splat.position == prev->position) splat.merge( *prev );
+            else 
+            {
+                string out;
+                prev->toString(out);
+                *output_stream << out << endl;
+            }
 
-            prev = splat;
+            prev = &splat;
         }
     }
-
-    if (output_file_stream.is_open())
-    {
-        output_file_stream.close();
-    }
+    // TODO missing last splat possibly?
 }
