@@ -7,11 +7,12 @@
 
 #include "warren/Coverage.h"
 #include "warren/Feature.h"
-#include "warren/Reader.h"
+#include "warren/Index.h"
+#include "warren/GFFReader.h"
+#include "warren/junctions.h"
 
 #define VERSION "0.1"
 
-using GFF::Feature;
 using std::cerr;
 using std::cout;
 using std::endl;
@@ -78,7 +79,7 @@ int main (int argc, char* argv[])
     cerr << "Loading the coverage file." << endl;
 
     Coverage coverage;
-    loadCoverage(coverage_stream, coverage);
+    coverage.load(coverage_stream);
 
     // open GFF reference file
     std::ifstream gff_stream(gff_file_path.c_str());
@@ -91,17 +92,18 @@ int main (int argc, char* argv[])
     cerr << "Loading the reference GFF." << endl;
 
     vector<Feature> transcripts;
-    GFF::ParentChildIndex exons_index;
-
+    ChildrenIndex exons_index;
+    GFFReader gff_reader;
     Feature f;
-    while (GFF::Reader::getNextFeature(gff_stream, f))
+
+    while (gff_reader.getNextFeature(gff_stream, f))
     {
-        if (isTranscriptType(f))
+        if (f.isTranscriptType())
         {
             transcripts.push_back(f);
         }
 
-        if (isExonType(f))
+        if (f.isExonType())
         {
             exons_index.add(f);
         }
@@ -113,7 +115,8 @@ int main (int argc, char* argv[])
         vector<Feature> junctions;
         vector<Feature> exons;
         exons_index.childrenOf(*transcript, exons);
-        spliceJunctions(exons, junctions);
+
+        getJunctions(exons, junctions);
 
         int transcript_total = 0;
         vector<int> exon_totals(exons.size(), 0);
@@ -169,11 +172,6 @@ int main (int argc, char* argv[])
                 (*output_stream) << endl;
             }
         }
-    }
-
-    if (output_file_stream.is_open())
-    {
-        output_file_stream.close();
     }
 
     return 0;

@@ -45,8 +45,8 @@ target_link_libraries( make-coverage warren ${LIBS} )
 add_executable( intron-length-stats src/tools/intron-length-stats.cpp)
 target_link_libraries( intron-length-stats warren ${LIBS} )
 
-#add_executable( feature_coverage ${SRCS} src/feature_coverage.cpp)
-#target_link_libraries( feature_coverage ${LIBS} )
+add_executable( feature-coverage src/tools/feature-coverage.cpp)
+target_link_libraries( feature-coverage warren ${LIBS} )
 
 #
 # Build unit tests if 'build_tests' option is on
