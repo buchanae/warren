@@ -33,6 +33,16 @@ class Alignment : public BamAlignment
             Position = p - 1;
         }
 
+        int matePosition (void) const
+        {
+            return MatePosition + 1;
+        }
+
+        void matePosition (int p)
+        {
+            MatePosition = p - 1;
+        }
+
         bool getJunction (Feature& junction);
 
     private:

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <locale>
@@ -7,26 +8,31 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "api/BamWriter.h"
+#include "bamtools/api/BamWriter.h"
 
 #include "tclap/CmdLine.h"
 
-#include "warren/Alignment.h"
 #include "warren/BamMultiReader.h"
+#include "warren/Splat.h"
 
 #define VERSION "0.1"
 
 #define DEFAULT_MIN_GAP 100
 #define DEFAULT_MAX_GAP 10000
 
+using std::cerr;
+using std::endl;
 using std::map;
+using std::set;
 using std::string;
 using std::stringstream;
 using std::vector;
 
+using BamTools::BamWriter;
+
 struct GroupKey
 {
-    int refID;
+    string refID;
     char mateID;
     bool rev;
 
@@ -77,8 +83,8 @@ int main (int argc, char * argv[])
         TCLAP::ValueArg<int> maxInsertArg("x", "max-insert", 
             "Maximum insert size", false, DEFAULT_MAX_GAP, "max insert size", cmd);
 
-        TCLAP::MultiArg<string> inputArgs("", 
-            "Input files (BAM format)", true,
+        TCLAP::MultiArg<string> inputArgs("b", "bam",
+            "Input BAM file", true,
             "input.bam", cmd);
 
         TCLAP::ValueArg<int> maxRecords("r", "max-records", 
@@ -135,7 +141,7 @@ int main (int argc, char * argv[])
         key.mateID = mateID;
         key.rev = a.IsReverseStrand();
 
-        group.insert( make_pair( key, a ) );
+        group.insert( std::make_pair( key, a ) );
 
         prev = current;
     }
@@ -172,7 +178,7 @@ bool isValidPair(Alignment& a, Alignment& b)
 
 void initMate(Alignment&a, Alignment& x)
 {
-    x(a);
+    x = a;  // TODO unit test this
     x.AddTag("XN", "Z", x.Name);
 
     string baseName;
@@ -202,15 +208,16 @@ void makePair(Alignment& a, Alignment& b, Alignment& x, Alignment& y)
     initMate(a, x);
     initMate(b, y);
 
+    int gap = pairedGapLength(a, b);
     int insert = a.Length + gap + b.Length;
 
     // Add in mate pair info
     x.MateRefID = b.RefID;
-    x.MatePosition = b.Position;
+    x.matePosition(b.position());
     x.InsertSize = insert;
 
     y.MateRefID = a.RefID;
-    y.MatePosition = a.Position;
+    y.matePosition(a.position());
     y.InsertSize = -1 * insert;
 
     // Update Mapping information appropriately
@@ -238,7 +245,7 @@ void processGroupRange (GroupRange& range_a, GroupRange& range_b)
             // ensure 'a' is the most 5' alignment
             if (b.position() < a.position())
             {
-                swap(a, b);
+                std::swap(a, b);
             }
 
             if (isValidPair(a, b))
@@ -274,11 +281,17 @@ void processGroup (Group& group, set<string>& refs)
         key_a.rev = true;
         key_b.rev = false;
 
-        processGroupRange(group.equal_range(key_a), group.equal_range(key_b));
+        range_a = group.equal_range(key_a);
+        range_b = group.equal_range(key_b);
+
+        processGroupRange(range_a, range_b);
 
         key_a.rev = false;
         key_b.rev = true;
 
-        processGroupRange(group.equal_range(key_a), group.equal_range(key_b));
+        range_a = group.equal_range(key_a);
+        range_b = group.equal_range(key_b);
+
+        processGroupRange(range_a, range_b);
     }
 }

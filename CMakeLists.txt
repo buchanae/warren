@@ -51,6 +51,9 @@ target_link_libraries( feature-coverage warren ${LIBS} )
 add_executable( bam-to-splat src/tools/bam-to-splat.cpp )
 target_link_libraries( bam-to-splat warren ${LIBS} )
 
+add_executable( matchmaker src/tools/matchmaker.cpp )
+target_link_libraries( matchmaker warren ${LIBS} )
+
 #
 # Build unit tests if 'build_tests' option is on
 #
