@@ -86,12 +86,18 @@ int main (int argc, char * argv[])
 
     while (pool_reader.GetNextAlignment(alignment))
     {
-        Splat splat(alignment);
+        Splat* splat = new Splat(alignment);
 
-        if (prev == NULL) prev = &splat;
+        if (prev == NULL)
+        {
+            prev = splat;
+        }
         else
         {
-            if (splat.position == prev->position) splat.merge( *prev );
+            if (splat->position == prev->position)
+            {
+                splat->merge( *prev );
+            }
             else 
             {
                 string out;
@@ -99,8 +105,10 @@ int main (int argc, char * argv[])
                 *output_stream << out << endl;
             }
 
-            prev = &splat;
+            prev = splat;
         }
     }
-    // TODO missing last splat possibly?
+    string out;
+    prev->toString(out);
+    *output_stream << out << endl;
 }
