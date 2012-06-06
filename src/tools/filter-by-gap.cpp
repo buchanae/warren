@@ -18,8 +18,8 @@ using std::vector;
 
 int main (int argc, char* argv[])
 {
-    int MIN_GAP = 10;
-    int MAX_GAP = 1000;
+    int MIN_SPACE = 10;
+    int MAX_SPACE = 1000;
 
     BamTools::BamWriter writer;
     BamReader bam_reader;
@@ -42,10 +42,10 @@ int main (int argc, char* argv[])
                                        true, "", "input.bam", cmd);
 
         TCLAP::ValueArg<int> minArg("m", "min", "Minimum allowed spacer size",
-                                       false, MIN_GAP, "10", cmd);
+                                       false, MIN_SPACE, "10", cmd);
 
         TCLAP::ValueArg<int> maxArg("M", "max", "Input BAM file",
-                                       false, MAX_GAP, "1000", cmd);
+                                       false, MAX_SPACE, "1000", cmd);
 
         TCLAP::ValueArg<string> outputArg("o", "output", "Output file",
                                           true, "", "output_file", cmd);
@@ -65,8 +65,8 @@ int main (int argc, char* argv[])
 
         initMultipleStackStreams(stack_streams, stacksArg.getValue());
 
-        MIN_GAP = minArg.getValue();
-        MAX_GAP = maxArg.getValue();
+        MIN_SPACE = minArg.getValue();
+        MAX_SPACE = maxArg.getValue();
     }
     catch (TCLAP::ArgException &e)
     {
@@ -136,12 +136,12 @@ int main (int argc, char* argv[])
         getSpacer(al, mate, spacer);
         int spacer_len = spacer.getLength();
 
-        if (spacer_len >= MIN_GAP && spacer_len <= MAX_GAP)
+        if (spacer_len >= MIN_SPACE && spacer_len <= MAX_SPACE)
         {
             writer.SaveAlignment(al);
             writer.SaveAlignment(mate);
         }
-        else if (spacer_len > MAX_GAP)
+        else if (spacer_len > MAX_SPACE)
         {
             vector<Feature> overlaps;
             junctions.overlappingFeature(spacer, overlaps);
@@ -161,8 +161,8 @@ int main (int argc, char* argv[])
                 }
 
                 int spacer_with_junctions_len = spacer_len - sum;
-                if (spacer_with_junctions_len >= MIN_GAP &&
-                    spacer_with_junctions_len <= MAX_GAP)
+                if (spacer_with_junctions_len >= MIN_SPACE &&
+                    spacer_with_junctions_len <= MAX_SPACE)
                 {
                     writer.SaveAlignment(al);
                     writer.SaveAlignment(mate);
