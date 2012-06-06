@@ -54,8 +54,8 @@ target_link_libraries( bam-to-splat warren ${LIBS} )
 add_executable( matchmaker src/tools/matchmaker.cpp )
 target_link_libraries( matchmaker warren ${LIBS} )
 
-add_executable( filter-by-gap src/tools/filter-by-gap.cpp )
-target_link_libraries( filter-by-gap warren ${LIBS} )
+add_executable( filter-by-spacer src/tools/filter-by-spacer.cpp )
+target_link_libraries( filter-by-spacer warren ${LIBS} )
 
 #
 # Build unit tests if 'build_tests' option is on
