@@ -25,13 +25,14 @@ void TypeIndex::type (const string& t, vector<Feature>& features)
 
 void ChildrenIndex::add (Feature& feature)
 {
-    vector<string> parent_IDs;
-    if (feature.attributes.all("Parent", parent_IDs))
+    vector<string> feature_parent_IDs;
+    if (feature.attributes.all("Parent", feature_parent_IDs))
     {
-        vector<string>::iterator IDs_it = parent_IDs.begin();
-        for (; IDs_it != parent_IDs.end(); ++IDs_it)
+        for (vector<string>::iterator ID = feature_parent_IDs.begin();
+             ID != feature_parent_IDs.end(); ++ID)
         {
-            by_parent_ID.insert(std::make_pair(*IDs_it, feature));
+            parent_IDs.insert(*ID);
+            by_parent_ID.insert(std::make_pair(*ID, feature));
         }
     }
 }
@@ -47,8 +48,6 @@ void ChildrenIndex::childrenOf (Feature& query, vector<Feature>& children)
 
 void ChildrenIndex::childrenOf (string& ID, vector<Feature>& children)
 {
-    parent_IDs.insert(ID);
-
     std::pair<
         std::multimap<string, Feature>::iterator,
         std::multimap<string, Feature>::iterator

@@ -64,6 +64,9 @@ int main (int argc, char* argv[])
         initGff(gff_stream, gffArg.getValue());
 
         initMultipleStackStreams(stack_streams, stacksArg.getValue());
+
+        MIN_GAP = minArg.getValue();
+        MAX_GAP = maxArg.getValue();
     }
     catch (TCLAP::ArgException &e)
     {
@@ -126,52 +129,44 @@ int main (int argc, char* argv[])
     Alignment al;
     while (bam_reader.GetNextAlignment(al))
     {
-        if (!al.IsPaired())
+        Alignment mate;
+        bam_reader.GetNextAlignment(mate);
+
+        Feature spacer;
+        getSpacer(al, mate, spacer);
+        int spacer_len = spacer.getLength();
+
+        if (spacer_len >= MIN_GAP && spacer_len <= MAX_GAP)
         {
             writer.SaveAlignment(al);
+            writer.SaveAlignment(mate);
         }
-        else if (al.IsFirstMate())
+        else if (spacer_len > MAX_GAP)
         {
-            Alignment mate;
-            if (bam_reader.GetNextAlignment(mate))
-            {
-                Feature spacer;
-                getSpacer(al, mate, spacer);
-                int spacer_len = spacer.getLength();
+            vector<Feature> overlaps;
+            junctions.overlappingFeature(spacer, overlaps);
 
-                if (spacer_len >= MIN_GAP && spacer_len <= MAX_GAP)
+            typedef vector<vector<Feature> > combos_t;
+            combos_t combos;
+            nonOverlappingJunctionCombos(overlaps, combos);
+
+            for (combos_t::iterator combo = combos.begin();
+                 combo != combos.end(); ++combo)
+            {
+                int sum = 0;
+                for (vector<Feature>::iterator junction = combo->begin();
+                     junction != combo->end(); ++junction)
+                {
+                    sum += junction->getLength();
+                }
+
+                int spacer_with_junctions_len = spacer_len - sum;
+                if (spacer_with_junctions_len >= MIN_GAP &&
+                    spacer_with_junctions_len <= MAX_GAP)
                 {
                     writer.SaveAlignment(al);
                     writer.SaveAlignment(mate);
-                }
-                else if (spacer_len > MAX_GAP)
-                {
-                    vector<Feature> overlaps;
-                    junctions.overlappingFeature(spacer, overlaps);
-
-                    typedef vector<vector<Feature> > combos_t;
-                    combos_t combos;
-                    nonOverlappingJunctionCombos(overlaps, combos);
-
-                    for (combos_t::iterator combo = combos.begin();
-                         combo != combos.end(); ++combo)
-                    {
-                        int sum = 0;
-                        for (vector<Feature>::iterator junction = combo->begin();
-                             junction != combo->end(); ++junction)
-                        {
-                            sum += junction->getLength();
-                        }
-
-                        int spacer_with_junctions_len = spacer_len - sum;
-                        if (spacer_with_junctions_len >= MIN_GAP &&
-                            spacer_with_junctions_len <= MAX_GAP)
-                        {
-                            writer.SaveAlignment(al);
-                            writer.SaveAlignment(mate);
-                            break;
-                        }
-                    }
+                    break;
                 }
             }
         }

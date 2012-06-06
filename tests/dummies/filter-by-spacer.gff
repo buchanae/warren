@@ -1,0 +1,13 @@
+two	test	gene	4000	7000	.	+	.	ID=bar
+two	test	mRNA	4010	6950	.	+	.	ID=bar.1;Parent=bar
+two	test	exon	4300	4350	.	+	.	Parent=bar.1
+two	test	exon	5300	5400	.	+	.	Parent=bar.1
+two	test	gene	14000	17000	.	+	.	ID=foo
+two	test	mRNA	14010	16950	.	+	.	ID=foo.1;Parent=foo
+two	test	exon	14300	14350	.	+	.	Parent=foo.1
+two	test	exon	15300	15400	.	+	.	Parent=foo.1
+two	test	mRNA	14010	16950	.	+	.	ID=foo.2;Parent=foo
+two	test	exon	14300	14350	.	+	.	Parent=foo.2
+two	test	exon	14500	14700	.	+	.	Parent=foo.2
+two	test	exon	14800	14950	.	+	.	Parent=foo.2
+two	test	exon	15300	15400	.	+	.	Parent=foo.2
