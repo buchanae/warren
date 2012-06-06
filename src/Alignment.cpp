@@ -61,7 +61,10 @@ int sumCigar (vector<CigarOp>& cigar)
 
 // Calculate paired-end gapped alignments using the CigarOp data
 // NOT the length of the query sequence
-int pairedGapLength (Alignment& a, Alignment& b)
+void getSpacer (Alignment& a, Alignment& b, Feature& spacer)
 {
-    return b.position() - a.position() + sumCigar(a.CigarData) - 2;
+    spacer.seqid = a.RefName;
+    spacer.type = "spacer";
+    spacer.start = a.position() + sumCigar(a.CigarData) - 1;
+    spacer.end = b.position();
 }

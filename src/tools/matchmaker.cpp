@@ -13,6 +13,7 @@
 #include "tclap/CmdLine.h"
 
 #include "warren/BamMultiReader.h"
+#include "warren/Feature.h"
 #include "warren/Splat.h"
 
 #define VERSION "0.1"
@@ -165,7 +166,9 @@ void parseID (string& id, string& groupID, char& mateID)
 
 bool isValidPair(Alignment& a, Alignment& b)
 {
-    int gap = pairedGapLength(a, b);
+    Feature spacer;
+    getSpacer(a, b, spacer);
+    int gap = spacer.getLength();
 
     // Calculate the correct size of the insert
     // REMEMBER: negative gaps mean our values overlap
@@ -208,8 +211,9 @@ void makePair(Alignment& a, Alignment& b, Alignment& x, Alignment& y)
     initMate(a, x);
     initMate(b, y);
 
-    int gap = pairedGapLength(a, b);
-    int insert = a.Length + gap + b.Length;
+    Feature spacer;
+    getSpacer(a, b, spacer);
+    int insert = a.Length + spacer.getLength() + b.Length;
 
     // Add in mate pair info
     x.MateRefID = b.RefID;

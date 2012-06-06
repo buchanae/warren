@@ -2,9 +2,13 @@
 
 #include "tclap/CmdLine.h"
 
+#include "bamtools/api/BamWriter.h"
+
 #include "warren/cli_helpers.h"
+#include "warren/GFFReader.h"
 #include "warren/Index.h"
 #include "warren/junctions.h"
+#include "warren/StackReader.h"
 
 #define VERSION "0.1"
 
@@ -14,17 +18,19 @@ using std::vector;
 
 int main (int argc, char* argv[])
 {
-    const int MAX_GAP = 1000;
+    int MIN_GAP = 10;
+    int MAX_GAP = 1000;
 
-    std::ostream* output;
+    BamTools::BamWriter writer;
     BamReader bam_reader;
     std::ifstream gff_stream;
     vector<std::ifstream*> stack_streams;
 
     try
     {
-        TCLAP::CmdLine cmd("Filter alignments by gap, accounting for splice junctions",
-                           ' ', VERSION);
+        TCLAP::CmdLine cmd(
+            "Filter alignments by spacer size, accounting for splice junctions",
+            ' ', VERSION);
 
         TCLAP::MultiArg<string> stacksArg("s", "stack", "Input Stack file", 
                                           false, "input.stack", cmd);
@@ -35,15 +41,25 @@ int main (int argc, char* argv[])
         TCLAP::ValueArg<string> bamArg("b", "bam", "Input BAM file",
                                        true, "", "input.bam", cmd);
 
+        TCLAP::ValueArg<int> minArg("m", "min", "Minimum allowed spacer size",
+                                       false, MIN_GAP, "10", cmd);
+
+        TCLAP::ValueArg<int> maxArg("M", "max", "Input BAM file",
+                                       false, MAX_GAP, "1000", cmd);
+
         TCLAP::ValueArg<string> outputArg("o", "output", "Output file",
                                           true, "", "output_file", cmd);
 
         cmd.parse(argc, argv);
 
-        // TODO change to Bam output
-        initOutput(output, outputArg.getValue());
-
         initBamReader(bam_reader, bamArg.getValue());
+
+        if (!writer.Open(outputArg.getValue(), bam_reader.GetHeader(),
+            bam_reader.GetReferenceData()))
+        {
+            throw TCLAP::ArgException("Could not open the output file: " + 
+                                      outputArg.getValue());
+        }
 
         initGff(gff_stream, gffArg.getValue());
 
@@ -94,11 +110,12 @@ int main (int argc, char* argv[])
 
     cerr << "Loading splice junctions from stack files." << endl;
 
-    for (vector<std::ifstream*>::iterator it = stack_streams.begin();
-         it != stack_streams.end(); ++it)
+    StackReader stack_reader;
+    for (vector<std::ifstream*>::iterator stack_stream = stack_streams.begin();
+         stack_stream != stack_streams.end(); ++stack_stream)
     {
         Feature j;
-        while (stack_reader.getNextFeature(stack_stream, j))
+        while (stack_reader.getNextFeature(**stack_stream, j))
         {
             junctions.add(j);
         }
@@ -107,37 +124,53 @@ int main (int argc, char* argv[])
     // TODO require alignments are sorted by ID
 
     Alignment al;
-    while (reader.GetNextAlignment(al))
+    while (bam_reader.GetNextAlignment(al))
     {
-        if (!al.isPaired())
+        if (!al.IsPaired())
         {
-            output.SaveAlignment(al);
+            writer.SaveAlignment(al);
         }
-        else if (al.isFirstMate())
+        else if (al.IsFirstMate())
         {
             Alignment mate;
-            if (reader.GetNextAlignment(mate))
+            if (bam_reader.GetNextAlignment(mate))
             {
-                Feature gap;
-                getAlignmentPairGap(al, mate, gap);
+                Feature spacer;
+                getSpacer(al, mate, spacer);
+                int spacer_len = spacer.getLength();
 
-                if (gap.getLength() <= MAX_GAP)
+                if (spacer_len >= MIN_GAP && spacer_len <= MAX_GAP)
                 {
-                    output.SaveAlignment(al);
-                    output.SaveAlignment(mate);
+                    writer.SaveAlignment(al);
+                    writer.SaveAlignment(mate);
                 }
-                else
+                else if (spacer_len > MAX_GAP)
                 {
                     vector<Feature> overlaps;
-                    junctions.overlappingFeature(gap, overlaps);
+                    junctions.overlappingFeature(spacer, overlaps);
 
-                    vector<vector<Feature> > combos;
+                    typedef vector<vector<Feature> > combos_t;
+                    combos_t combos;
                     nonOverlappingJunctionCombos(overlaps, combos);
 
-                    if (gap.getLength() - len <= MAX_GAP)
+                    for (combos_t::iterator combo = combos.begin();
+                         combo != combos.end(); ++combo)
                     {
-                        output.SaveAlignment(al);
-                        output.SaveAlignment(mate);
+                        int sum = 0;
+                        for (vector<Feature>::iterator junction = combo->begin();
+                             junction != combo->end(); ++junction)
+                        {
+                            sum += junction->getLength();
+                        }
+
+                        int spacer_with_junctions_len = spacer_len - sum;
+                        if (spacer_with_junctions_len >= MIN_GAP &&
+                            spacer_with_junctions_len <= MAX_GAP)
+                        {
+                            writer.SaveAlignment(al);
+                            writer.SaveAlignment(mate);
+                            break;
+                        }
                     }
                 }
             }

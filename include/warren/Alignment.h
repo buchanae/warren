@@ -56,6 +56,6 @@ string toString(const vector<CigarOp>& cd);
 
 int sumCigar(vector<CigarOp>& cigar);
 
-int pairedGapLength(Alignment& a, Alignment& b);
+void getSpacer (Alignment& a, Alignment& b, Feature& spacer);
 
 #endif

@@ -7,7 +7,7 @@
 
 using std::vector;
 
-bool getJunctions(vector<Feature>& features, vector<Feature>& juncs);
+bool getJunctions (vector<Feature>& features, vector<Feature>& juncs);
 
 void nonOverlappingJunctionCombos (vector<Feature>& junctions,
                                    vector<vector<Feature> >& output);
