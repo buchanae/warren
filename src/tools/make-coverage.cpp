@@ -161,13 +161,33 @@ int main (int argc, char* argv[])
     }
 
     // read and filter alignments, adding to coverages
-    Alignment al;
+    Alignment al, mate;
+    Feature junction;
     while (reader.GetNextAlignment(al))
     {
-        Feature junction;
-        if (al.getJunction(junction) && junctions.contains(junction))
+        if (al.IsPaired())
         {
-            coverage.add(al);
+            bool valid = true;
+            if (al.getJunction(junction))
+                valid = junctions.contains(junction);
+
+            reader.GetNextAlignment(mate);
+
+            if (mate.getJunction(junction))
+                valid = valid && junctions.contains(junction);
+
+            if (valid)
+            {
+                coverage.add(al);
+                coverage.add(mate);
+            }
+        }
+        else
+        {
+            if (al.getJunction(junction))
+                coverage.add(al);
+            else
+                coverage.add(al);
         }
     }
 
