@@ -116,6 +116,12 @@ struct Feature
         to_lower(s);
         return exon_types.find(s) != exon_types.end();
     }
+
+    bool overlaps (Feature& other)
+    {
+        return other.start >= start && other.start <= end
+            || start >= other.start && start <= other.end;
+    }
 };
 
 struct FeaturePositionComparator

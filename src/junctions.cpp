@@ -31,3 +31,23 @@ bool getJunctions(vector<Feature>& features, vector<Feature>& juncs)
     }
     return true;
 }
+
+void nonOverlappingJunctionCombos (vector<Feature>& junctions,
+                                   vector<vector<Feature> >& output)
+{
+    for (int i = 0; i < junctions.size(); ++i)
+    {
+        vector<Feature> current;
+        current.push_back(junctions.at(i));
+        output.push_back(current);
+
+        for (int j = i + 1; j < junctions.size(); ++j)
+        {
+            if (!junctions.at(i).overlaps(junctions.at(j)))
+            {
+                current.push_back(junctions.at(j));
+                output.push_back(current);
+            }
+        }
+    }
+}

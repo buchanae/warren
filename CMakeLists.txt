@@ -54,6 +54,9 @@ target_link_libraries( bam-to-splat warren ${LIBS} )
 add_executable( matchmaker src/tools/matchmaker.cpp )
 target_link_libraries( matchmaker warren ${LIBS} )
 
+#add_executable( filter-alignments-by-gap src/tools/filter-alignments-by-gap.cpp )
+#target_link_libraries( filter-alignments-by-gap warren ${LIBS} )
+
 #
 # Build unit tests if 'build_tests' option is on
 #
@@ -73,6 +76,7 @@ if( build_tests )
     tests/UniquePositionIndex.cpp
     tests/GFFReader.cpp
     tests/StackReader.cpp
+    tests/junctions.cpp
   )
 
   #
