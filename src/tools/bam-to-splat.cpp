@@ -27,8 +27,9 @@ struct CompareSplats
 
 int main (int argc, char * argv[])
 {
-    string output_file_path;
+    string output_file_path, TEMP_DIR;
     vector<string> bam_file_paths;
+    int MAX_RECORDS;
 
     try
     {
@@ -36,12 +37,21 @@ int main (int argc, char * argv[])
 
         TCLAP::MultiArg<string> bamFilesArg("b", "bam", "Input BAM file", 
                                          true, "input.bam", cmd);
+
+        TCLAP::ValueArg<int> maxRecordsArg("r", "max-records", 
+            "Maximum records per sorted file.", false, 500000, "max", cmd);
+
+        TCLAP::ValueArg<string> tempDirArg("T", "temp-dir", 
+            "Temp directory for sorting.", false, "/tmp", "temp directory", cmd);
+
         TCLAP::ValueArg<string> outputFileArg("o", "output", "Output file", 
                                               true, "", "output.splat", cmd);
 
         cmd.parse(argc, argv);
 
         bam_file_paths = bamFilesArg.getValue();
+        MAX_RECORDS = maxRecordsArg.getValue();
+        TEMP_DIR = tempDirArg.getValue();
         output_file_path = outputFileArg.getValue();
 
     } catch (TCLAP::ArgException &e) {
@@ -73,7 +83,7 @@ int main (int argc, char * argv[])
     reader.Open(bam_file_paths);
 
     BamTools::RefVector refs = reader.GetReferenceData();
-    BamPool<CompareSplats> pool(refs);
+    BamPool<CompareSplats> pool(refs, MAX_RECORDS, TEMP_DIR);
 
     Alignment alignment;
     while (reader.GetNextAlignment(alignment))

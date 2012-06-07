@@ -88,12 +88,6 @@ int main (int argc, char * argv[])
             "Input BAM file", true,
             "input.bam", cmd);
 
-        TCLAP::ValueArg<int> maxRecords("r", "max-records", 
-            "Maximum records per sorted file.", false, 500000, "max");
-
-        TCLAP::ValueArg<string> tempDir("T", "temp-dir", 
-            "Temp directory for sorting.", false, "/tmp", "temp directory", cmd);
-
         cmd.parse(argc, argv);
 
         combinedOutFilename = combinedOutputArg.getValue();

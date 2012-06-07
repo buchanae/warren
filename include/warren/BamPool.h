@@ -12,7 +12,7 @@
 #include "warren/Alignment.h"
 #include "warren/BamReader.h"
 
-#define DEFAULT_MAX_SIZE 10000000
+#define DEFAULT_MAX_SIZE 1000000
 #define DEFAULT_TMP_DIR "/tmp"
 
 using std::string;
@@ -119,9 +119,10 @@ class BamPool
 
     public:
 
-        BamPool (BamTools::RefVector& refs) : references(refs),
-                                              MAX_SIZE(DEFAULT_MAX_SIZE),
-                                              TMP_DIR(DEFAULT_TMP_DIR) {};
+        BamPool (BamTools::RefVector& refs, 
+                 int max = DEFAULT_MAX_SIZE, 
+                 string tmp = DEFAULT_TMP_DIR)
+            : references(refs), MAX_SIZE(max), TMP_DIR(tmp) {};
 
         ~BamPool (void)
         {
