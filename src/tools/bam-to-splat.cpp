@@ -92,7 +92,7 @@ int main (int argc, char * argv[])
     }
 
     BamPoolReader<CompareSplats> pool_reader = pool.getReader();
-    Splat* prev;
+    Splat* prev = NULL;
 
     while (pool_reader.GetNextAlignment(alignment))
     {
