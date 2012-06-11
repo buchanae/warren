@@ -115,6 +115,7 @@ int main (int argc, char * argv[])
                 *output_stream << out << endl;
             }
 
+            delete prev;
             prev = splat;
         }
     }
