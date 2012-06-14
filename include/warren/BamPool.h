@@ -29,14 +29,24 @@ class BamPoolReader
         BamReader* reader;
         Alignment alignment;
 
-        bool operator< (const ReadHead& other) const
-        {
-            return comparator(alignment, other.alignment);
-        }
-
         bool readNext (void)
         {
             return reader->GetNextAlignment(alignment);
+        }
+    };
+
+    struct ReadHeadComparator
+    {
+        Compare comp;
+
+        ReadHeadComparator(Compare comp_p)
+        {
+            comp = comp_p;
+        }
+
+        bool operator() (const ReadHead* a, const ReadHead* b)
+        {
+            return comp(b->alignment, a->alignment);
         }
     };
 
@@ -68,7 +78,7 @@ class BamPoolReader
          }
 
          // initialize heap of read heads
-         make_heap(read_heads.begin(), read_heads.end());
+         make_heap(read_heads.begin(), read_heads.end(), ReadHeadComparator(comparator));
 
          initialized = true;
     }
@@ -84,7 +94,7 @@ class BamPoolReader
 
             // next alignment is the one on the top of the heap
             ReadHead* max = read_heads.front();
-            pop_heap(read_heads.begin(), read_heads.end());
+            pop_heap(read_heads.begin(), read_heads.end(), ReadHeadComparator(comparator));
             read_heads.pop_back();
             alignment = max->alignment;
 
@@ -92,7 +102,7 @@ class BamPoolReader
             if (max->readNext())
             {
                 read_heads.push_back(max);
-                push_heap(read_heads.begin(), read_heads.end());
+                push_heap(read_heads.begin(), read_heads.end(), ReadHeadComparator(comparator));
             }
             else
             {

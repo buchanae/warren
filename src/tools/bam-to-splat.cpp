@@ -20,7 +20,7 @@ struct CompareSplats
     {
         return (a.RefName < b.RefName)
             || (a.RefName == b.RefName && a.position() < b.position())
-            || (a.RefName == b.RefName && a.position() < b.position()
+            || (a.RefName == b.RefName && a.position() == b.position()
                 && (toString(a.CigarData) < toString(b.CigarData)));
     }
 };
