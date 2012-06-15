@@ -126,11 +126,16 @@ int main (int argc, char* argv[])
 
     // TODO require alignments are sorted by ID
 
-    Alignment al;
+    Alignment al, mate;
+    Feature junction;
     while (bam_reader.GetNextAlignment(al))
     {
-        Alignment mate;
         bam_reader.GetNextAlignment(mate);
+
+        bool valid = true;
+        if (al.getJunction(junction)) valid = junctions.contains(junction);
+        if (mate.getJunction(junction)) valid = valid && junctions.contains(junction);
+        if (!valid) continue;
 
         Feature spacer;
         getSpacer(al, mate, spacer);

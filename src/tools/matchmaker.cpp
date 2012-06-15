@@ -128,11 +128,11 @@ int main (int argc, char * argv[])
             group.clear();
             references.clear();
         }
-        
+
         references.insert(a.RefName);
 
         GroupKey key;
-        key.refID = a.RefID;
+        key.refID = a.RefName;
         key.mateID = mateID;
         key.rev = a.IsReverseStrand();
 
@@ -231,7 +231,7 @@ void processGroupRange (GroupRange& range_a, GroupRange& range_b)
     Group::iterator a_it;
     Group::iterator b_it;
 
-    int valid_count = 0;
+    int valid_count = 1;
 
     for (a_it = range_a.first; a_it != range_a.second; ++a_it)
     {
@@ -248,13 +248,17 @@ void processGroupRange (GroupRange& range_a, GroupRange& range_b)
 
             if (isValidPair(a, b))
             {
+                std::stringstream count_str;
+                count_str << valid_count;
                 Alignment x, y;
                 makePair(a, b, x, y);
-                x.Name += "-" + valid_count;
-                y.Name += "-" + valid_count;
+                x.Name += "-" + count_str.str();
+                y.Name += "-" + count_str.str();
  
                 ValidOut.SaveAlignment(x);
                 ValidOut.SaveAlignment(y);
+
+                valid_count++;
             }
         }
     }
