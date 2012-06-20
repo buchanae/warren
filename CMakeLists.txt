@@ -1,5 +1,6 @@
 project( warren )
 option( build_tests "Build tests" OFF )
+option( build_tools "Build tools" ON )
 
 cmake_minimum_required( VERSION 2.6 )
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
@@ -39,23 +40,28 @@ set(
 add_library( warren ${SRCS} )
 target_link_libraries( warren ${LIBS} )
 
-add_executable( make-coverage src/tools/make-coverage.cpp)
-target_link_libraries( make-coverage warren ${LIBS} )
+#
+# Build tools
+#
+if( build_tools )
+  add_executable( make-coverage src/tools/make-coverage.cpp)
+  target_link_libraries( make-coverage warren ${LIBS} )
 
-add_executable( intron-length-stats src/tools/intron-length-stats.cpp)
-target_link_libraries( intron-length-stats warren ${LIBS} )
+  add_executable( intron-length-stats src/tools/intron-length-stats.cpp)
+  target_link_libraries( intron-length-stats warren ${LIBS} )
 
-add_executable( feature-coverage src/tools/feature-coverage.cpp)
-target_link_libraries( feature-coverage warren ${LIBS} )
+  add_executable( feature-coverage src/tools/feature-coverage.cpp)
+  target_link_libraries( feature-coverage warren ${LIBS} )
 
-add_executable( bam-to-splat src/tools/bam-to-splat.cpp )
-target_link_libraries( bam-to-splat warren ${LIBS} )
+  add_executable( bam-to-splat src/tools/bam-to-splat.cpp )
+  target_link_libraries( bam-to-splat warren ${LIBS} )
 
-add_executable( matchmaker src/tools/matchmaker.cpp )
-target_link_libraries( matchmaker warren ${LIBS} )
+  add_executable( matchmaker src/tools/matchmaker.cpp )
+  target_link_libraries( matchmaker warren ${LIBS} )
 
-add_executable( filter-by-spacer src/tools/filter-by-spacer.cpp )
-target_link_libraries( filter-by-spacer warren ${LIBS} )
+  add_executable( filter-by-spacer src/tools/filter-by-spacer.cpp )
+  target_link_libraries( filter-by-spacer warren ${LIBS} )
+endif()
 
 #
 # Build unit tests if 'build_tests' option is on
