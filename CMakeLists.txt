@@ -59,6 +59,9 @@ if( build_tools )
 
   add_executable( filter-by-spacer src/tools/filter-by-spacer.cpp )
   target_link_libraries( filter-by-spacer warren ${LIBS} )
+
+  add_executable( sort-fasta src/tools/sort-fasta.cpp )
+  target_link_libraries( sort-fasta warren ${LIBS} )
 endif()
 
 #
