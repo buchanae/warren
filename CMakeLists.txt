@@ -77,6 +77,7 @@ if( build_tests )
     tests/Attributes.cpp
     tests/BamReader.cpp
     tests/Coverage.cpp
+    tests/FastaReader.cpp
     tests/Feature.cpp
     tests/Index.cpp
     tests/UniquePositionIndex.cpp
