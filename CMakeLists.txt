@@ -82,6 +82,7 @@ if( build_tests )
     tests/Index.cpp
     tests/UniquePositionIndex.cpp
     tests/GFFReader.cpp
+    tests/MultiReader.cpp
     tests/TempFileFactory.cpp
     tests/StackReader.cpp
     tests/junctions.cpp
