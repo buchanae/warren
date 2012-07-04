@@ -20,19 +20,7 @@ class StackReader
     istream& input;
 
     public:
-        StackReader ();
         StackReader (istream& in) : input(in) {};
-
-        bool open (const char* file_path)
-        {
-            std::ifstream in(file_path);
-            return in.good();
-        }
-
-        bool open (string file_path)
-        {
-            return open(file_path.c_str());
-        }
 
         bool read (Feature& f)
         {
