@@ -46,17 +46,16 @@ void initGff(ifstream& gff_stream, string file_path)
     }
 }
 
-void initMultipleStackStreams(vector<ifstream*> stack_streams,
-                              vector<string> file_paths)
+void initInputFileStreams(vector<ifstream*>& streams, const vector<string>& file_paths)
 {
-    for (vector<string>::iterator file_path = file_paths.begin();
+    for (vector<string>::const_iterator file_path = file_paths.begin();
          file_path != file_paths.end(); ++file_path)
     {
-        ifstream* stack_stream = new ifstream(file_path->c_str());
-        if (!stack_stream->is_open())
+        ifstream* stream = new ifstream(file_path->c_str());
+        if (!stream->is_open())
         {
-            throw TCLAP::ArgException("Could not open the Stack file: " + *file_path);
+            throw TCLAP::ArgException("Could not open the file: " + *file_path);
         }
-        stack_streams.push_back(stack_stream);
+        streams.push_back(stream);
     }
 }

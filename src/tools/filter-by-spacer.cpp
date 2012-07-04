@@ -63,7 +63,7 @@ int main (int argc, char* argv[])
 
         initGff(gff_stream, gffArg.getValue());
 
-        initMultipleStackStreams(stack_streams, stacksArg.getValue());
+        initInputFileStreams(stack_streams, stacksArg.getValue());
 
         MIN_SPACE = minArg.getValue();
         MAX_SPACE = maxArg.getValue();
