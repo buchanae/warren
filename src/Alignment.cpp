@@ -5,8 +5,9 @@
 #include "warren/Alignment.h"
 #include "warren/Feature.h"
 
-Alignment::Alignment(void) : BamTools::BamAlignment() {}
-Alignment::Alignment(BamTools::BamAlignment& other) : BamTools::BamAlignment(other) {}
+Alignment::Alignment(void) : BamTools::BamAlignment(), RefName("") {}
+Alignment::Alignment(BamTools::BamAlignment& other)
+    : BamTools::BamAlignment(other), RefName("") {}
 
 bool Alignment::getJunction (Feature& junction)
 {

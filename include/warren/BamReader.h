@@ -12,7 +12,10 @@ class BamReader : public BamTools::BamReader
         {
             if (!BamTools::BamReader::GetNextAlignment(a)) return false;
 
-            a.RefName = GetReferenceData().at(a.RefID).RefName;
+            if (a.RefID != -1)
+            {
+                a.RefName = GetReferenceData().at(a.RefID).RefName;
+            }
             return true;
         }
 };
