@@ -21,20 +21,17 @@ using std::vector;
 int main (int argc, char* argv[])
 {
     string gff_file_path, output_file_path;
-    vector<string> stack_file_paths;
 
     try
     {
         TCLAP::CmdLine cmd("Program description", ' ', VERSION);
 
-        TCLAP::MultiArg<string> inputSTACKS("s", "stack-file", "Stack file", false, "foo.stacks", cmd);
         TCLAP::ValueArg<string> inputGFF("g", "gff-file", "Input GFF file", true, "", "input_file.gff", cmd);
         TCLAP::ValueArg<string> outputFileArg("o", "output", "Output file", true, "", "output.coverage", cmd);
 
         cmd.parse(argc, argv);
 
         gff_file_path = inputGFF.getValue();
-        stack_file_paths = inputSTACKS.getValue();
         output_file_path = outputFileArg.getValue();
 
     } catch (TCLAP::ArgException &e) {
