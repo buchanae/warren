@@ -93,10 +93,10 @@ int main (int argc, char* argv[])
 
     vector<Feature> transcripts;
     ChildrenIndex exons_index;
-    GFFReader gff_reader;
+    GFFReader gff_reader(gff_stream);
     Feature f;
 
-    while (gff_reader.getNextFeature(gff_stream, f))
+    while (gff_reader.read(f))
     {
         if (f.isTranscriptType())
         {

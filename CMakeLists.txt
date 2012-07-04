@@ -15,8 +15,6 @@ set(
   src/Attributes.cpp
   src/Coverage.cpp
   src/Index.cpp
-  src/GFFReader.cpp
-  src/StackReader.cpp
   src/junctions.cpp
 )
 

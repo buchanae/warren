@@ -90,10 +90,10 @@ int main (int argc, char* argv[])
 
     UniquePositionIndex junctions;
     ChildrenIndex exon_index;
-    GFFReader gff_reader;
+    GFFReader gff_reader(gff_stream);
     Feature f;
 
-    while (gff_reader.getNextFeature(gff_stream, f))
+    while (gff_reader.read(f))
     {
         if (f.isExonType())
         {
@@ -124,7 +124,6 @@ int main (int argc, char* argv[])
 
     cerr << "Loading splice junctions from stack files." << endl;
 
-    StackReader stack_reader;
     // load splice junctions from stack files
     for (vector<string>::iterator it = stack_file_paths.begin();
          it != stack_file_paths.end(); ++it)
@@ -137,8 +136,9 @@ int main (int argc, char* argv[])
         }
         else
         {
+            StackReader stack_reader(stack_stream);
             Feature j;
-            while (stack_reader.getNextFeature(stack_stream, j))
+            while (stack_reader.read(j))
             {
                 junctions.add(j);
             }

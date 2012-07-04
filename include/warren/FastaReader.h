@@ -2,18 +2,34 @@
 #define WARREN_FASTAREADER_H
 
 #include <istream>
+#include <fstream>
 #include <string>
 
 #include "warren/Fasta.h"
 
+using std::istream;
 using std::string;
 
 class FastaReader
 {
-    std::istream& input;
+    istream& input;
 
     public:
-        FastaReader (std::istream& i) : input(i) {};
+        typedef Fasta Record;
+
+        FastaReader ();
+        FastaReader (istream& in) : input(in) {};
+
+        bool open (const char* file_path)
+        {
+            std::ifstream in(file_path);
+            return in.good();
+        }
+
+        bool open (string file_path)
+        {
+            return open(file_path.c_str());
+        }
 
         bool read (Fasta& record)
         {

@@ -16,7 +16,7 @@ using testing::ElementsAre;
 using testing::WhenSorted;
 // TODO skip GFF comments
 
-TEST(GFFReaderTest, getNextFeature)
+TEST (GFFReaderTest, read)
 {
     std::stringstream data;
     data << "Chr\ttest\ttestgene\t20\t30\t0\t+\t0\tName=foo" << std::endl;
@@ -24,13 +24,16 @@ TEST(GFFReaderTest, getNextFeature)
 
     Feature f;
 
-    GFFReader reader;
-    reader.getNextFeature(data, f);
+    GFFReader reader(data);
+    reader.read(f);
     EXPECT_EQ("Chr", f.seqid);
 
-    reader.getNextFeature(data, f);
+    reader.read(f);
     EXPECT_EQ("Chr2", f.seqid);
 }
+
+/*
+TODO outdated and moved to include/warren/gff_helpers.h
 
 TEST(GFFReaderTest, readAllAndLinkChildren)
 {
@@ -63,3 +66,4 @@ TEST(GFFReaderTest, readAllAndLinkChildren)
 }
 
 // TODO test children() when feature doesn't have ID
+*/

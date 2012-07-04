@@ -79,10 +79,10 @@ int main (int argc, char* argv[])
     cerr << "Loading splice junctions from reference GFF." << endl;
 
     ChildrenIndex exon_index;
-    GFFReader gff_reader;
+    GFFReader gff_reader(gff_stream);
     Feature f;
 
-    while (gff_reader.getNextFeature(gff_stream, f))
+    while (gff_reader.read(f))
     {
         if (f.isExonType())
         {
@@ -113,12 +113,12 @@ int main (int argc, char* argv[])
 
     cerr << "Loading splice junctions from stack files." << endl;
 
-    StackReader stack_reader;
     for (vector<std::ifstream*>::iterator stack_stream = stack_streams.begin();
          stack_stream != stack_streams.end(); ++stack_stream)
     {
+        StackReader stack_reader(**stack_stream);
         Feature j;
-        while (stack_reader.getNextFeature(**stack_stream, j))
+        while (stack_reader.read(j))
         {
             junctions.add(j);
         }
