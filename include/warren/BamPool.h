@@ -12,9 +12,6 @@
 #include "warren/Alignment.h"
 #include "warren/BamReader.h"
 
-#define DEFAULT_MAX_SIZE 1000000
-#define DEFAULT_TMP_DIR "/tmp"
-
 using std::string;
 using std::vector;
 
@@ -117,7 +114,7 @@ template<class Compare>
 class BamPool
 {
     string TMP_DIR;
-    int MAX_SIZE;
+    int BUFFER_SIZE;
 
     typedef vector<Alignment> buffer_t;
     buffer_t buffer;
@@ -129,10 +126,14 @@ class BamPool
 
     public:
 
-        BamPool (BamTools::RefVector& refs, 
-                 int max = DEFAULT_MAX_SIZE, 
+        // initialized after class definition
+        static const int DEFAULT_BUFFER_SIZE;
+        static const string DEFAULT_TMP_DIR;
+
+        BamPool (const BamTools::RefVector& refs, 
+                 int max = DEFAULT_BUFFER_SIZE, 
                  string tmp = DEFAULT_TMP_DIR)
-            : references(refs), MAX_SIZE(max), TMP_DIR(tmp) {};
+            : references(refs), BUFFER_SIZE(max), TMP_DIR(tmp) {};
 
         ~BamPool (void)
         {
@@ -147,7 +148,7 @@ class BamPool
         void add (Alignment& alignment)
         {
             // flush buffer if it's full
-            if (buffer.size() >= MAX_SIZE) flush();
+            if (buffer.size() >= BUFFER_SIZE) flush();
 
             buffer.push_back(alignment);
         }
@@ -198,7 +199,7 @@ class BamPool
 
         void setMaxBufferSize(int max)
         {
-            MAX_SIZE = max;
+            BUFFER_SIZE = max;
         }
 
         void setTmpDir(string& tmp)
@@ -212,5 +213,11 @@ class BamPool
             return BamPoolReader<Compare>(file_names);
         }
 };
+
+template<class Compare>
+const int BamPool<Compare>::DEFAULT_BUFFER_SIZE = 1000000;
+
+template<class Compare>
+const string BamPool<Compare>::DEFAULT_TMP_DIR = "/tmp";
 
 #endif

@@ -15,6 +15,8 @@ class FastaReader
     istream& input;
 
     public:
+        typedef Fasta Record;
+
         FastaReader (istream& in) : input(in) {};
 
         bool read (Fasta& record)
@@ -60,6 +62,29 @@ class FastaReader
                 return true;
             }
 
+            return false;
+        }
+};
+
+class FastaPairReader
+{
+    FastaReader reader;
+
+    public:
+        typedef FastaPair Record;
+
+        FastaPairReader (istream& in) : reader(in) {};
+
+        bool read (FastaPair& record)
+        {
+            Fasta a;
+            Fasta b;
+            if (reader.read(a) && reader.read(b))
+            {
+                record.a = a;
+                record.b = b;
+                return true;
+            }
             return false;
         }
 };
