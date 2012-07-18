@@ -12,7 +12,7 @@ struct Fasta
 
     string toString (void)
     {
-        return header + "\n" + sequence;
+        return ">" + header + "\n" + sequence;
     }
 };
 

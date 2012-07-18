@@ -62,6 +62,9 @@ if( build_tools )
 
   add_executable( sort-fasta src/tools/sort-fasta.cpp )
   target_link_libraries( sort-fasta warren ${LIBS} )
+
+  add_executable( unique-fasta src/tools/unique-fasta.cpp )
+  target_link_libraries( unique-fasta warren ${LIBS} )
 endif()
 
 #
