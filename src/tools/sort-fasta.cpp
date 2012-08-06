@@ -20,12 +20,14 @@ using TCLAP::ArgException;
 
 using std::cerr;
 using std::ifstream;
+using std::ofstream;
+using std::ostream;
 using std::endl;
 using std::vector;
 
 
 template<typename Reader, typename Sorter>
-void run (vector<ifstream*>& streams, int buffer_size, string& tmp_dir);
+void run (vector<ifstream*>& streams, int buffer_size, string& tmp_dir, ostream* out);
 
 
 int main (int argc, char* argv[])
@@ -70,24 +72,26 @@ int main (int argc, char* argv[])
         return 1;
     }
 
+    ostream* out = new ofstream(output_file_path.c_str());
+
     if (paired)
     {
         typedef MultiReader<FastaPairReader> Reader;
         typedef FastaPairSorter Sorter;
 
-        run<Reader, Sorter>(streams, buffer_size, tmp_dir);
+        run<Reader, Sorter>(streams, buffer_size, tmp_dir, out);
     }
     else
     {
         typedef MultiReader<FastaReader> Reader;
         typedef FastaSorter Sorter;
 
-        run<Reader, Sorter>(streams, buffer_size, tmp_dir);
+        run<Reader, Sorter>(streams, buffer_size, tmp_dir, out);
     }
 }
 
 template<typename Reader, typename Sorter>
-void run (vector<ifstream*>& streams, int buffer_size, string& tmp_dir)
+void run (vector<ifstream*>& streams, int buffer_size, string& tmp_dir, ostream* out)
 {
     Reader reader;
     for (vector<ifstream*>::iterator stream = streams.begin();
@@ -110,6 +114,6 @@ void run (vector<ifstream*>& streams, int buffer_size, string& tmp_dir)
     typename Sorter::Reader sorted = sorter.getReader();
     while (sorted.read(record))
     {
-        cerr << record.toString() << endl;
+        *out << record.toString() << endl;
     }
 }
