@@ -54,7 +54,7 @@ int MAX_GAP;
 // global Bam writers for convenience
 BamWriter ValidOut;
 
-void processGroupRange (GroupRange& range_a, GroupRange& range_b);
+void processGroupRange (GroupRange& range_a, GroupRange& range_b, int& valid_count);
 
 void processGroup (Group& group, set<string>& refs);
 
@@ -226,12 +226,10 @@ void makePair(Alignment& a, Alignment& b, Alignment& x, Alignment& y)
     y.SetIsMateReverseStrand(a.IsReverseStrand());
 }
 
-void processGroupRange (GroupRange& range_a, GroupRange& range_b)
+void processGroupRange (GroupRange& range_a, GroupRange& range_b, int& valid_count)
 {
     Group::iterator a_it;
     Group::iterator b_it;
-
-    int valid_count = 1;
 
     for (a_it = range_a.first; a_it != range_a.second; ++a_it)
     {
@@ -266,6 +264,7 @@ void processGroupRange (GroupRange& range_a, GroupRange& range_b)
 
 void processGroup (Group& group, set<string>& refs)
 {
+    int valid_count = 1;
     GroupKey key_a;
     GroupKey key_b;
     GroupRange range_a;
@@ -286,7 +285,7 @@ void processGroup (Group& group, set<string>& refs)
         range_a = group.equal_range(key_a);
         range_b = group.equal_range(key_b);
 
-        processGroupRange(range_a, range_b);
+        processGroupRange(range_a, range_b, valid_count);
 
         key_a.rev = false;
         key_b.rev = true;
@@ -294,6 +293,6 @@ void processGroup (Group& group, set<string>& refs)
         range_a = group.equal_range(key_a);
         range_b = group.equal_range(key_b);
 
-        processGroupRange(range_a, range_b);
+        processGroupRange(range_a, range_b, valid_count);
     }
 }
